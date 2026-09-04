@@ -59,7 +59,7 @@
       --cream-glass: rgba(253, 251, 244, .75);
       --gold: #e8a93c;
       --gold-2: #f4c465;
-      --leaf: #5b8a3c;
+      --leaf: #3f6b22;
       --ink: #231d12;
       --muted: #6d6554;
       --ring: rgba(232, 169, 60, .55);
@@ -107,7 +107,7 @@
       overflow: hidden;
       isolation: isolate;
       border-radius: 0 0 34px 34px;
-      background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Rio_la_miel_caldas_Saman%C3%A1.jpg/1280px-Rio_la_miel_caldas_Saman%C3%A1.jpg") center/cover no-repeat #1f2f1a;
+      background: url("assets/rio-miel-caldas-samana.jpg") center/cover no-repeat #1f2f1a;
     }
 
     .hero::before {
@@ -158,6 +158,7 @@
       border-radius: 50%;
       background: #fff;
       padding: 6px;
+      object-fit: cover;
       box-shadow: 0 18px 40px rgba(0, 0, 0, .35), 0 0 0 6px rgba(255, 255, 255, .25);
       animation: float 6s ease-in-out infinite;
     }
@@ -583,7 +584,7 @@
       max-width: 560px;
     }
 
-    .feature .f-txt h3 {
+    .feature .f-txt h2 {
       font-family: 'Fraunces', serif;
       color: #fff;
       font-weight: 800;
@@ -887,17 +888,29 @@
     }
 
     .car-dots button {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .car-dots button::before {
+      content: "";
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: rgba(255, 255, 255, .5);
-      border: none;
-      padding: 0;
-      cursor: pointer;
       transition: background .2s ease, transform .2s ease;
     }
 
-    .car-dots button.active {
+    .car-dots button.active::before {
       background: #fff;
       transform: scale(1.25)
     }
@@ -996,6 +1009,10 @@
 
     .p-sec h5.warn {
       color: #b24a2f
+    }
+
+    .p-bank .p-sec h5.warn {
+      color: #f2a08c
     }
 
     .p-list {
@@ -1308,7 +1325,7 @@
       align-items: flex-start;
       background: rgba(199, 91, 62, .12);
       border: 1px solid rgba(199, 91, 62, .3);
-      color: #a23b22;
+      color: #f2a08c;
       font-weight: 700;
       font-size: .82rem;
       padding: 11px 14px;
@@ -2447,6 +2464,7 @@
       background-size: cover;
       background-position: center;
       position: relative;
+      overflow: hidden;
     }
 
     .bs-list-thumb::after {
@@ -3251,7 +3269,7 @@
           alt="" loading="lazy">
         <span class="feature-ov"></span>
         <div class="f-txt">
-          <h3>¡Vive la aventura en contacto con la naturaleza!</h3>
+          <h2>¡Vive la aventura en contacto con la naturaleza!</h2>
           <p>Descubre experiencias únicas en Finca Papirucho Río Sonador: excursiones, camping, glamping y mucho más.
           </p>
         </div>
@@ -3353,7 +3371,7 @@
         <!-- ===== COMPACT SERVICE LIST (mobile bottom sheet trigger) ===== -->
         <div class="bs-list" id="bs-list">
           <div class="bs-list-item" data-svc="camping" role="button" tabindex="0" aria-label="Ver detalles de Camping" onclick="window.openSheet('camping')">
-            <div class="bs-list-thumb" style="background-image:url('assets/progressive/85bbcae0.jpg')"></div>
+            <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/85bbcae0.jpg" alt="" loading="lazy"></div>
             <div class="bs-list-info">
               <div class="bs-list-cat">Ecoturismo</div>
               <div class="bs-list-name">Camping</div>
@@ -3362,7 +3380,7 @@
             <div class="bs-list-arrow">›</div>
           </div>
           <div class="bs-list-item" data-svc="excursion" role="button" tabindex="0" aria-label="Ver detalles de Excursión Río Sonador" onclick="window.openSheet('excursion')">
-            <div class="bs-list-thumb" style="background-image:url('assets/progressive/9d1519dc.jpg')"></div>
+            <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/9d1519dc.jpg" alt="" loading="lazy"></div>
             <div class="bs-list-info">
               <div class="bs-list-cat">Aventura</div>
               <div class="bs-list-name">Excursión Río Sonador</div>
@@ -3371,7 +3389,7 @@
             <div class="bs-list-arrow">›</div>
           </div>
           <div class="bs-list-item" data-svc="fourwheel" role="button" tabindex="0" aria-label="Ver detalles de Fourwheel Tours" onclick="window.openSheet('fourwheel')">
-            <div class="bs-list-thumb" style="background-image:url('assets/progressive/94c56be1.jpg')"></div>
+            <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/94c56be1.jpg" alt="" loading="lazy"></div>
             <div class="bs-list-info">
               <div class="bs-list-cat">Extremo</div>
               <div class="bs-list-name">Fourwheel Tours</div>
@@ -3380,7 +3398,7 @@
             <div class="bs-list-arrow">›</div>
           </div>
           <div class="bs-list-item" data-svc="balneario" role="button" tabindex="0" aria-label="Ver detalles de Áreas Recreativas" onclick="window.openSheet('balneario')">
-            <div class="bs-list-thumb" style="background-image:url('assets/progressive/443b56bc.jpg')"></div>
+            <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/443b56bc.jpg" alt="" loading="lazy"></div>
             <div class="bs-list-info">
               <div class="bs-list-cat">Relax</div>
               <div class="bs-list-name">Áreas Recreativas</div>
@@ -3615,7 +3633,7 @@
               <span class="p-kind">Excursión</span>
             </div>
             <div class="p-body">
-              <h3 class="p-title">Explora el corazón del río Sonador</h3>
+              <h4 class="p-title">Explora el corazón del río Sonador</h4>
               <p class="p-sub">Una experiencia guiada para quienes aman la naturaleza y la aventura. Un recorrido para
                 conectar con lo esencial y disfrutar del entorno de forma segura.</p>
               <div class="p-price">RD$1,200 <small>por persona</small></div>
@@ -3686,7 +3704,7 @@
               <span class="p-kind">Fourwheel</span>
             </div>
             <div class="p-body">
-              <h3 class="p-title">Descubre el paraíso en 4 gomas</h3>
+              <h4 class="p-title">Descubre el paraíso en 4 gomas</h4>
               <p class="p-sub">Tours de fourwheel con <b>@donsamueladventure</b>: 2 a 3 horas de aventura con 3 paradas
                 dentro de los ríos.</p>
               <div class="p-price">RD$3,000 <small>por fourwheel · por persona</small></div>
@@ -3724,7 +3742,7 @@
               <span class="p-kind">Alquiler</span>
             </div>
             <div class="p-body">
-              <h3 class="p-title">Espacio exclusivo frente al río</h3>
+              <h4 class="p-title">Espacio exclusivo frente al río</h4>
               <p class="p-sub">Alquila un espacio exclusivo frente al río para tus actividades en la Finca Papirucho.
               </p>
               <div class="p-price">RD$3,000 <small>por día</small></div>
@@ -3770,10 +3788,10 @@
       <div class="p-bank reveal d4 sec-anchor" id="pagos">
         <h5>Datos de pago y reservas</h5>
         <div class="bk"><span class="bk-l"><img decoding="async" class="bk-logo sq"
-              src="https://www.google.com/s2/favicons?domain=banreservas.com&sz=128" alt="Banreservas"
+              src="assets/bank-banreservas.png" alt="Banreservas"
               loading="lazy"><span>Banreservas</span></span><b>0730101242</b></div>
         <div class="bk"><span class="bk-l"><img decoding="async" class="bk-logo sq"
-              src="https://www.google.com/s2/favicons?domain=bhd.com.do&sz=128" alt="BHD"
+              src="assets/bank-bhd.png" alt="BHD"
               loading="lazy"><span>BHD</span></span><b>24778620010</b></div>
         <div class="bk"><span>Cédula</span><b>037-0116204-6</b></div>
         <div class="owner">Jordana Jiménez</div>
@@ -3806,7 +3824,7 @@
         <h2 class="section-title">Un vistazo a Finca Papirucho</h2>
         <div class="video-frame" style="margin-top:14px">
           <iframe width="560" height="315"
-            src="https://www.youtube.com/embed/1x5iWNuhsFY?si=Z7jupN5Zxz0sTYnV&amp;start=324"
+            src="https://www.youtube-nocookie.com/embed/1x5iWNuhsFY?si=Z7jupN5Zxz0sTYnV&amp;start=324"
             title="Video de Finca Papirucho" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -3853,7 +3871,7 @@
               decoding="async" src="assets/progressive/6430c738.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
           <a href="https://bio.linkcdn.cc/upload/2025050414/174636819600084452.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/6449584a.jpg" alt="Camping"
+              decoding="async" src="assets/progressive/6449584a.jpg" alt="Zona de camping en Finca Papirucho"
               loading="lazy"></a>
           <a href="https://bio.linkcdn.cc/upload/2025050414/174636829400024087.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/3fbaa461.jpg"
