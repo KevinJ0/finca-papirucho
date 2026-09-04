@@ -8,10 +8,15 @@
   <meta name="description"
     content="Excursiones, camping, glamping y áreas recreativas junto al río Sonador, en Yásica, Puerto Plata. Reserva tu aventura por WhatsApp.">
   <meta property="og:title" content="Finca Papirucho | Río Sonador, Yásica">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kevinj0.github.io/finca-papirucho-redesign/">
   <meta property="og:description"
     content="Excursiones, camping, glamping y áreas recreativas junto al río Sonador, en Yásica, Puerto Plata. Reserva tu aventura por WhatsApp.">
-  <meta property="og:image" content="https://bio.linkcdn.cc/upload/21008gceifg/2026012820/176963165200070427.png">
-  <link rel="icon" href="https://bio.linkcdn.cc/upload/2023042218/168218867200095844.png">
+  <meta property="og:image" content="https://res.cloudinary.com/kevinj0/image/upload/v1/camping_hero.jpg">
+  <meta property="og:opens" content="12:00">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="icon" href="assets/logo.jpg">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -51,6 +56,7 @@
       --forest-2: #2c4322;
       --sand: #f6f0e2;
       --cream: #fdfbf4;
+      --cream-glass: rgba(253, 251, 244, .75);
       --gold: #e8a93c;
       --gold-2: #f4c465;
       --leaf: #5b8a3c;
@@ -316,7 +322,7 @@
     }
 
     .card {
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .08);
       border-radius: 22px;
       padding: 26px 22px;
@@ -463,7 +469,7 @@
       gap: 15px;
       padding: 16px 18px;
       border-radius: 16px;
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .1);
       text-decoration: none;
       color: var(--forest);
@@ -608,7 +614,7 @@
     }
 
     details.faq-item {
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .1);
       border-radius: 15px;
       overflow: hidden;
@@ -769,7 +775,7 @@
 
     /* product card */
     .p-card {
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .09);
       border-radius: 22px;
       overflow: hidden;
@@ -1144,7 +1150,7 @@
     }
 
     .camp-item {
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .09);
       border-radius: 20px;
       overflow: hidden;
@@ -1363,7 +1369,7 @@
 
     /* ===== NEW HOME SECTIONS ===== */
     .sec-card {
-      background: var(--cream);
+      background: var(--cream-glass);
       border: 1px solid rgba(31, 47, 26, .09);
       border-radius: 22px;
       padding: 22px 22px 24px;
@@ -2287,13 +2293,20 @@
         animation: none;
         opacity: .35
       }
+
+      .bs-scroll-hint svg {
+        animation: none
+      }
     }
 
     /* ===== Botón flotante de WhatsApp ===== */
     .wa-float {
       position: fixed;
-      bottom: 88px;
-      right: 20px;
+      /* Same row as the floating menu (.quicknav): both share the bottom edge. */
+      bottom: 20px;
+      /* Sit in the lateral air to the right of the centered .content (max-width 1280px)
+         whenever there is room; fall back to the corner edge on narrow screens. */
+      right: max(20px, calc((100vw - 1280px) / 2 - 84px));
       z-index: 60;
       width: 58px;
       height: 58px;
@@ -2301,11 +2314,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #25d366, #128c7e);
+      background: linear-gradient(135deg, #128c4e, #0d6b3a);
       color: #fff;
       box-shadow: 0 10px 26px rgba(37, 211, 102, .4);
       transition: transform .2s ease, box-shadow .2s ease;
       animation: wa-pulse 2.6s ease-in-out infinite;
+    }
+
+    /* Very narrow screens: no room for WS beside the centered menu,
+       so it stacks above it as a column (WS on top, menu below),
+       and the button shrinks ~20% to keep focus on the menu. */
+    @media (max-width: 30rem) {
+      .wa-float {
+        bottom: 88px;
+        width: 46px;
+        height: 46px;
+      }
     }
 
     .wa-float:hover {
@@ -2380,6 +2404,776 @@
     /* el feature usa z-index negativos para ir detras del overlay y el texto */
     .feature .prog-wrap {
       z-index: -2;
+    }
+
+    /* ============================================================
+       BOTTOM SHEET — Mobile service navigation
+       ============================================================ */
+
+    /* --- Compact service list (replaces tabbar on mobile) --- */
+    .bs-list {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .bs-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--cream);
+      border: 1px solid rgba(31, 47, 26, .08);
+      border-radius: 16px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bs-list-item:active {
+      transform: scale(.97);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    }
+
+    .bs-list-thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .bs-list-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, .15);
+    }
+
+    .bs-list-thumb span {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .3));
+    }
+
+    .bs-list-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bs-list-cat {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #3f662b;
+      margin-bottom: 1px;
+    }
+
+    .bs-list-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--forest);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bs-list-price {
+      font-size: .85rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .bs-list-arrow {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--sand);
+      display: grid;
+      place-items: center;
+      color: var(--forest);
+      font-size: 1.1rem;
+      font-weight: 700;
+      transition: background .2s ease;
+    }
+
+    .bs-list-item:active .bs-list-arrow {
+      background: var(--forest);
+      color: #fff;
+    }
+
+    /* --- Overlay --- */
+    .bs-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      background: rgba(0, 0, 0, .5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+
+    .bs-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* --- Sheet --- */
+    .bs-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 901;
+      background: var(--cream);
+      border-radius: 24px 24px 0 0;
+      transform: translateY(100%);
+      visibility: hidden;
+      transition: transform .45s cubic-bezier(.22, .9, .3, 1), visibility .45s ease;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .bs-sheet.open {
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    /* --- Scroll hint (animated arrow when more content is below) --- */
+    .bs-scroll-hint {
+      position: sticky;
+      bottom: 14px;
+      margin-right: 14px;
+      margin-left: auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(251, 247, 238, .78);
+      border: 1px solid rgba(46, 61, 34, .18);
+      color: rgba(46, 61, 34, .75);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .3s ease, visibility .3s ease;
+      z-index: 5;
+    }
+
+    .bs-scroll-hint.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .bs-scroll-hint svg {
+      animation: bs-hint-bob 1.6s ease-in-out infinite;
+    }
+
+    @keyframes bs-hint-bob {
+      0%, 100% {
+        transform: translateY(0)
+      }
+      50% {
+        transform: translateY(4px)
+      }
+    }
+
+    .bs-handle {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: rgba(0, 0, 0, .12);
+      border-radius: 4px;
+      z-index: 11;
+    }
+
+    .bs-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .45);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      border: none;
+      font-size: 1.1rem;
+      z-index: 10;
+      transition: transform .2s ease;
+      line-height: 1;
+    }
+
+    .bs-close:active {
+      transform: scale(.9);
+    }
+
+    /* --- Hero carousel inside sheet --- */
+    .bs-hero {
+      width: 100%;
+      height: 210px;
+      /* Match the sheet radius (24px) so no sheet-cream fringe shows at corners */
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      position: relative;
+      background: var(--forest);
+      /* Force own compositing layer: avoids white corner flashes on Android
+         while the track transforms under the rounded clip */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      touch-action: pan-y;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .bs-hero .bs-carousel {
+      position: absolute;
+      inset: 0;
+    }
+
+    .bs-hero .bs-carousel-track {
+      display: flex;
+      height: 100%;
+      background: var(--forest);
+      transition: transform .5s cubic-bezier(.22, .9, .3, 1);
+    }
+
+    .bs-hero .bs-carousel-track .bs-slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+      height: 100%;
+      background: var(--forest);
+    }
+
+    .bs-hero .bs-carousel-track .bs-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: var(--forest);
+      color: var(--forest);
+    }
+
+    .bs-hero .bs-car-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .45);
+      color: #fff;
+      border: none;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      z-index: 5;
+      transition: background .2s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .bs-hero .bs-car-nav:active {
+      background: rgba(0, 0, 0, .7);
+    }
+
+    .bs-hero .bs-car-prev {
+      left: 10px
+    }
+
+    .bs-hero .bs-car-next {
+      right: 10px
+    }
+
+    .bs-hero .bs-car-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .bs-hero .bs-car-dots button {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .45);
+      border: none;
+      padding: 0;
+      transition: background .25s ease, transform .25s ease;
+    }
+
+    .bs-hero .bs-car-dots button.active {
+      background: #fff;
+      transform: scale(1.35);
+    }
+
+    /* --- Sheet body --- */
+    .bs-body {
+      padding: 8px 20px 36px;
+    }
+
+    .bs-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--forest);
+      margin-bottom: 2px;
+    }
+
+    .bs-sub {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .bs-price-block {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      background: var(--sand);
+      border-left: 3px solid var(--gold);
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: var(--forest);
+    }
+
+    .bs-price-block small {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: .75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    /* Section divider */
+    .bs-sec-title {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bs-sec-title::before {
+      content: '';
+      width: 3px;
+      height: 13px;
+      background: var(--gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Inclusion grid */
+    .bs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .bs-grid-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--sand);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: .88rem;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .bs-grid-icon {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      font-size: .95rem;
+      background: rgba(31, 47, 26, .06);
+    }
+
+    /* Conditions warn box */
+    .bs-warn {
+      background: #fff8e1;
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .bs-warn-title {
+      font-weight: 700;
+      font-size: .8rem;
+      color: #9e6100;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+
+    .bs-warn-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bs-warn-list li {
+      font-size: .88rem;
+      color: var(--ink);
+      font-weight: 500;
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.4;
+    }
+
+    .bs-warn-list li::before {
+      content: '⚠';
+      position: absolute;
+      left: 0;
+      font-size: .75rem;
+    }
+
+    /* Menu block */
+    .bs-menu {
+      background: var(--sand);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .bs-menu-title {
+      font-weight: 700;
+      font-size: .85rem;
+      color: var(--forest);
+      margin-bottom: 8px;
+    }
+
+    .bs-menu-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: .88rem;
+      color: var(--ink);
+      font-weight: 500;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(31, 47, 26, .1);
+    }
+
+    .bs-menu-row:last-child {
+      border: none
+    }
+
+    /* Camping sub-plan sections (same visual language as the other services) */
+    .bs-plan {
+      margin-bottom: 22px;
+    }
+
+    .bs-plan + .bs-plan {
+      border-top: 1px dashed rgba(31, 47, 26, .12);
+      padding-top: 18px;
+    }
+
+    .bs-plan-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .bs-plan-emoji {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--sand);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+    }
+
+    .bs-plan-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bs-plan-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: 1.08rem;
+      color: var(--forest);
+      line-height: 1.15;
+    }
+
+    /* Schedule row */
+    .bs-sched {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .bs-sched-item {
+      flex: 1;
+      background: var(--cream);
+      border-radius: 8px;
+      padding: 10px 10px;
+      text-align: center;
+    }
+
+    .bs-sched-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .bs-sched-val {
+      font-weight: 700;
+      font-size: .88rem;
+      color: var(--forest);
+    }
+
+    /* Note tag */
+    .bs-note {
+      display: inline-block;
+      background: rgba(232, 169, 60, .12);
+      color: #6b4c00;
+      font-size: .78rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      letter-spacing: .3px;
+    }
+
+    /* WhatsApp button inside sheet */
+    .bs-wa {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, #0d6b3a, #0a5c32);
+      color: #fff;
+      font-weight: 700;
+      font-size: .98rem;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: none;
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease;
+      box-shadow: 0 6px 18px rgba(37, 211, 102, .25);
+      margin-top: 4px;
+    }
+
+    .bs-wa:active {
+      transform: scale(.97);
+    }
+
+    .bs-wa svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* --- Mobile: show list, hide tabbar --- */
+    @media (max-width: 759px) {
+      .xp-tabbar {
+        display: none !important
+      }
+
+      .bs-list {
+        display: flex
+      }
+
+      /* Mobile uses the bottom sheet; hide the duplicated full panels below the list */
+      .xp-tabs .xp {
+        display: none !important
+      }
+    }
+
+    /* --- Desktop: hide sheet components entirely --- */
+    @media (min-width: 760px) {
+      .bs-list,
+      .bs-overlay,
+      .bs-sheet {
+        display: none !important
+      }
+    }
+
+    /* ===== Galería lightbox (in-page viewer, keeps users on the site) ===== */
+    .lb-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(8, 12, 7, .92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .28s ease, visibility .28s ease;
+    }
+
+    .lb-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lb-frame {
+      position: relative;
+      max-width: min(94vw, 980px);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transform: scale(.96);
+      transition: transform .28s cubic-bezier(.22, .9, .3, 1);
+    }
+
+    .lb-overlay.open .lb-frame {
+      transform: scale(1);
+    }
+
+    .lb-img-wrap {
+      position: relative;
+      max-width: 100%;
+      max-height: calc(92vh - 70px);
+    }
+
+    .lb-img-wrap img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(92vh - 70px);
+      border-radius: 14px;
+      background: var(--forest);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
+    }
+
+    .lb-caption {
+      color: rgba(255, 255, 255, .88);
+      font-size: .88rem;
+      font-weight: 600;
+      letter-spacing: .3px;
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    .lb-close {
+      position: absolute;
+      top: -52px;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .35);
+      font-size: 1rem;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .lb-close:hover,
+    .lb-close:focus-visible {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    .lb-close:active {
+      transform: scale(.9);
+    }
+
+    .lb-close svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .lb-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .14);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .3);
+      font-size: 1.5rem;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background .2s ease, transform .2s ease;
+      z-index: 1101;
+    }
+
+    .lb-nav:hover,
+    .lb-nav:focus-visible {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    .lb-nav:active {
+      transform: translateY(-50%) scale(.9);
+    }
+
+    .lb-prev {
+      left: 14px;
+    }
+
+    .lb-next {
+      right: 14px;
+    }
+
+    .lb-counter {
+      color: rgba(255, 255, 255, .55);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .6px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lb-overlay,
+      .lb-frame {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -2554,6 +3348,46 @@
             aria-controls="fourwheel">Fourwheel</button>
           <button id="tab-balneario" class="xp-tab" data-tab="balneario" role="tab"
             aria-controls="balneario">Áreas</button>
+        </div>
+
+        <!-- ===== COMPACT SERVICE LIST (mobile bottom sheet trigger) ===== -->
+        <div class="bs-list" id="bs-list">
+          <div class="bs-list-item" data-svc="camping" role="button" tabindex="0" aria-label="Ver detalles de Camping" onclick="window.openSheet('camping')">
+            <div class="bs-list-thumb" style="background-image:url('assets/progressive/85bbcae0.jpg')"></div>
+            <div class="bs-list-info">
+              <div class="bs-list-cat">Ecoturismo</div>
+              <div class="bs-list-name">Camping</div>
+              <div class="bs-list-price">Desde RD$700 · Grupal · Glamping</div>
+            </div>
+            <div class="bs-list-arrow">›</div>
+          </div>
+          <div class="bs-list-item" data-svc="excursion" role="button" tabindex="0" aria-label="Ver detalles de Excursión Río Sonador" onclick="window.openSheet('excursion')">
+            <div class="bs-list-thumb" style="background-image:url('assets/progressive/9d1519dc.jpg')"></div>
+            <div class="bs-list-info">
+              <div class="bs-list-cat">Aventura</div>
+              <div class="bs-list-name">Excursión Río Sonador</div>
+              <div class="bs-list-price">RD$1,200 · 3 km ida y vuelta</div>
+            </div>
+            <div class="bs-list-arrow">›</div>
+          </div>
+          <div class="bs-list-item" data-svc="fourwheel" role="button" tabindex="0" aria-label="Ver detalles de Fourwheel Tours" onclick="window.openSheet('fourwheel')">
+            <div class="bs-list-thumb" style="background-image:url('assets/progressive/94c56be1.jpg')"></div>
+            <div class="bs-list-info">
+              <div class="bs-list-cat">Extremo</div>
+              <div class="bs-list-name">Fourwheel Tours</div>
+              <div class="bs-list-price">RD$3,000 · 3 horarios diarios</div>
+            </div>
+            <div class="bs-list-arrow">›</div>
+          </div>
+          <div class="bs-list-item" data-svc="balneario" role="button" tabindex="0" aria-label="Ver detalles de Áreas Recreativas" onclick="window.openSheet('balneario')">
+            <div class="bs-list-thumb" style="background-image:url('assets/progressive/443b56bc.jpg')"></div>
+            <div class="bs-list-info">
+              <div class="bs-list-cat">Relax</div>
+              <div class="bs-list-name">Áreas Recreativas</div>
+              <div class="bs-list-price">RD$3,000 · Balneario</div>
+            </div>
+            <div class="bs-list-arrow">›</div>
+          </div>
         </div>
 
         <!-- ===== CAMPING ===== -->
@@ -2777,7 +3611,7 @@
 
           <div class="p-card reveal d1">
             <div class="p-hero" aria-label="Fotos de la excursión al río Sonador"
-              data-images="assets/progressive/9d1519dc.jpg,assets/progressive/2d7c625e.jpg,assets/progressive/22583405.jpg,assets/progressive/52560b04.jpg,assets/progressive/e5681a45.png">
+              data-images="assets/progressive/9d1519dc.jpg,assets/progressive/2d7c625e.jpg,assets/progressive/22583405.jpg,assets/progressive/52560b04.jpg,assets/progressive/e5681a45.jpg">
               <span class="p-kind">Excursión</span>
             </div>
             <div class="p-body">
@@ -2927,8 +3761,8 @@
         <div class="hours" id="hours">
           <span class="dot"></span>
           <span class="day">Todos los días</span>
-          <span class="status" data-open="9" data-close="17">Cargando...</span>
-          <span class="time">9:00 a. m. - 5:00 p. m.</span>
+          <span class="status" data-open="12" data-close="17">Cargando...</span>
+          <span class="time">12:00 p. m. - 5:00 p. m.</span>
         </div>
       </div>
 
@@ -3254,7 +4088,7 @@
       "assets/progressive/2d7c625e.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIEAwX/xAAjEAEAAQMEAgIDAAAAAAAAAAABAgADEQQSITEiQTJRYZGh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAgEAA//EABoRAQEBAAMBAAAAAAAAAAAAAAABEQISMUH/2gAMAwEAAhEDEQA/AIITgRO9/wCKN6yzF/dR7joVp7W75OQPdcul+BjoWXfEzlBPfdWa0sx00W2JJ5SufYubcJyPHVbag1La3NuRGJ2lbjbL4PXEkp+LRWE8L3iimUhixni2BL7py2qCKY5c1RD7rc5yPWaU3PQnNlYiWzxzH3zVl24z07FvRw+mpba5DL000nyorKhu2ZQl3j+0Uyue3uioUf/Z",
       "assets/progressive/22583405.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIDBAX/xAAiEAACAgEDBQEBAAAAAAAAAAABAgADEQQhMRIyQVFhIvD/xAAXAQEBAQEAAAAAAAAAAAAAAAACAAED/8QAGREBAQEBAQEAAAAAAAAAAAAAAAERITEC/9oADAMBAAIRAxEAPwDl1seCwBz53mlr3XNZbtEtqNNQtYNZLOffiZmqyQWLEj7DOjci1F6g7khseJV9QSPwuG+GY305GGwQPIzKorKODj7NxlsCuzHbfPvmEUBRXnfqyd4SyrjYaiTvFekzoN2CJYB08DiOVy9c0dLu1YY4X3GWoxtMB1P/AHky44MvD+stZjSMcQlvcJaOP//Z",
       "assets/progressive/52560b04.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAgQAAQMF/8QAJxAAAgEDAwIGAwAAAAAAAAAAAQIRAAMhEjFBBFETIjNhkfBDscH/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID/8QAFREBAQAAAAAAAAAAAAAAAAAAABH/2gAMAwEAAhEDEQA/AMLp86s4EMMFeCOaBbggnclcjsaO/cQW1jUqqRtmQe1L3C5JgExiRXOEMI82DwSO9HLM4UYgTtSi3VMBixDCAcCrXq2XKqTpxPf7ikWNnbSDoiC2w4qUm99nABeFOTp3NSrEi7cj8SweT/Kd8RVYP05tqQNysn5NKdKAb6yAcj90UR1ePuKNDF9ihDjVMkEjijsJau22bwWgtAK7A/NKj1gOJNUCRIBIBFBr1Ci2y2mXSQOdvapXZtIr9N5lDRESPapVH//Z",
-      "assets/progressive/e5681a45.png": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAAAAUBAwIEBv/EACcQAAICAQQABQUBAAAAAAAAAAECAxEABBIhMRMyQXHBIlFhobHh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAgEDAP/EABoRAQEBAQADAAAAAAAAAAAAAAABEQISITH/2gAMAwEAAhEDEQA/AGUmsh6Dbm54AyjVTQyKoWYevlYcYk3C75sZjupuqF9nJetSfTpJY1UDxuR39X+5ks6rIGM1LYvnv3xFOamc8eY/3Jk3eBHTE8t8YS103iqRYYEfcHDOXWZ1WjuHthj8gG5bA5yKBcWSeejlujRWY7lB9xjyKCFdOzLEgbaeQovM7cKTSmPTE6qRpAQj3QrsXz+srUJt2tY2kgUKF431AB0iWAfLmoiqEkpRx1x+M6demskjVGmkNHa3Vg4YwkAEcdD0+MMmhj//2Q==",
+      "assets/progressive/e5681a45.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAAAAUBAwIEBv/EACcQAAICAQQABQUBAAAAAAAAAAECAxEABBIhMRMyQXHBIlFhobHh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAgEDAP/EABoRAQEBAQADAAAAAAAAAAAAAAABEQISITH/2gAMAwEAAhEDEQA/AGUmsh6Dbm54AyjVTQyKoWYevlYcYk3C75sZjupuqF9nJetSfTpJY1UDxuR39X+5ks6rIGM1LYvnv3xFOamc8eY/3Jk3eBHTE8t8YS103iqRYYEfcHDOXWZ1WjuHthj8gG5bA5yKBcWSeejlujRWY7lB9xjyKCFdOzLEgbaeQovM7cKTSmPTE6qRpAQj3QrsXz+srUJt2tY2kgUKF431AB0iWAfLmoiqEkpRx1x+M6demskjVGmkNHa3Vg4YwkAEcdD0+MMmhj//2Q==",
       "assets/progressive/94c56be1.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAMEBQEG/8QAKBAAAgEDAwMCBwAAAAAAAAAAAQIDABEhBBITMUFRBWEyQnGBkaGx/8QAFwEBAQEBAAAAAAAAAAAAAAAAAgADBP/EABsRAAMBAAMBAAAAAAAAAAAAAAABESECIjFB/9oADAMBAAIRAxEAPwDHj0skjlI1uQNxz2p2ljEWrVZwQewAvntSklZMxOCT1xa1Ngu80JlYgMRZvFDRJU39O/JysRbcRjxipH00ME0csMZAYZ8jFSrrJtFO8W6OUObqScfqqZJ35SkgViemcE+1F34JwsCShcSbsWIOKK4vIyMbYB6DJorLuww8/CjbVXiWwJ3G2W+9U63TSyRptRY0RcKDcW8lqokG2K4x9Klly9jkcN7e9xXQt0nmFEekRoUMjIkPXaFufyafaKNDxNtFgbt38C4tas3WMRMFBNti4q6Ena2flo7RxNDvSJpJG1HJ1FseOtFL9E+HUHvuX+UUeXpLw//Z",
       "assets/progressive/90c4fa95.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAgQFAAMG/8QAKBAAAgEEAQMDBAMAAAAAAAAAAQIDAAQRIRIiMUETUWEFMjNCccHw/8QAFgEBAQEAAAAAAAAAAAAAAAAAAgED/8QAHREAAwACAgMAAAAAAAAAAAAAAAERAhIDISIxQf/aAAwDAQACEQMRAD8AttBE79ZcnHvU64Np68kcSnkm2bPmgsrtnkMbSEL/ADml2uCbedFXmQ2GA151Qy450y4x9nGS3hlbkkyjFBJbllHF0A980DLcPbxqkTkgkHA2CaprakRIGVYtbBGxRcQdaTpLFvQR4Q/InZPn214rVymu5I9qcbwue6b/ALrU9X9LEOLKFjBXCkn9QNAUVvCksThJA6DbDHc/4UpD1TBW2DnIPaqsvQrqnSOB0NVrn4pJEXbFuT2FyqoyKW85zqm5pZpgM8ZcdsEDHxrvS8QDzIHAYGIEg7zqn71ES3QooU8fAxWMsbH6qPOTFxdFhGOQP2upIHya1H9XZvV7n8Y8/NatIgbNH//Z",
       "assets/progressive/cfb70b53.jpg": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAaACgDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAQBAwUCBv/EACUQAAICAQQABgMAAAAAAAAAAAECABEDBBIhMQUTIkFRcSMyYv/EABcBAQEBAQAAAAAAAAAAAAAAAAECAAP/xAAZEQEBAQADAAAAAAAAAAAAAAAAARECIVH/2gAMAwEAAhEDEQA/AGW1uqZbDgA9ECQNZqEO9shA+GA5mdl1T4EVWA3AXZHvFm1ZYH13xVzltp6amu8VyumxSEDd1M3ddgkWRQuUsxDUxs11K9xY31R4jnodZG3Nz9XUIO7FeeoRheobJpumxpX9KIp4g+PJgbHhxruPTBANsMnDmovkJ+TCcYrWcdJn33u3H7lvl6gsfM2gfC+0YcnaDftKshIIon9blBH41FZK76q4RdeXN8wmwa//2Q==",
@@ -3629,7 +4463,7 @@
       "assets/progressive/2d7c625e.jpg": { low: "assets/progressive/2d7c625e_low.jpg", med: "assets/progressive/2d7c625e_med.jpg" },
       "assets/progressive/22583405.jpg": { low: "assets/progressive/22583405_low.jpg", med: "assets/progressive/22583405_med.jpg" },
       "assets/progressive/52560b04.jpg": { low: "assets/progressive/52560b04_low.jpg", med: "assets/progressive/52560b04_med.jpg" },
-      "assets/progressive/e5681a45.png": { low: "assets/progressive/e5681a45_low.jpg", med: "assets/progressive/e5681a45_med.jpg" },
+      "assets/progressive/e5681a45.jpg": { low: "assets/progressive/e5681a45_low.jpg", med: "assets/progressive/e5681a45_med.jpg" },
       "assets/progressive/94c56be1.jpg": { low: "assets/progressive/94c56be1_low.jpg", med: "assets/progressive/94c56be1_med.jpg" },
       "assets/progressive/90c4fa95.jpg": { low: "assets/progressive/90c4fa95_low.jpg", med: "assets/progressive/90c4fa95_med.jpg" },
       "assets/progressive/cfb70b53.jpg": { low: "assets/progressive/cfb70b53_low.jpg", med: "assets/progressive/cfb70b53_med.jpg" },
@@ -3804,6 +4638,550 @@
       }
     })();
   </script>
+
+  <!-- ===== BOTTOM SHEET ===== -->
+  <div class="bs-overlay" id="bs-overlay" aria-hidden="true"></div>
+  <div class="bs-sheet" id="bs-sheet" role="dialog" aria-modal="true" aria-label="Detalles del servicio" aria-hidden="true">
+    <div class="bs-handle"></div>
+    <button class="bs-close" id="bs-close" aria-label="Cerrar">✕</button>
+    <div class="bs-hero" id="bs-hero"></div>
+    <div class="bs-body" id="bs-body"></div>
+    <div class="bs-scroll-hint" id="bs-scroll-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       BOTTOM SHEET — Mobile service navigation (standalone)
+       ============================================================ */
+    (function () {
+      console.log('[BS] bottom sheet script loaded');
+
+      var overlay = document.getElementById('bs-overlay');
+      var sheet = document.getElementById('bs-sheet');
+      var closeBtn = document.getElementById('bs-close');
+      var heroEl = document.getElementById('bs-hero');
+      var bodyEl = document.getElementById('bs-body');
+      var scrollHint = document.getElementById('bs-scroll-hint');
+      var items = document.querySelectorAll('.bs-list-item[data-svc]');
+
+      console.log('[BS] overlay:', !!overlay, 'sheet:', !!sheet, 'items:', items.length);
+
+      if (!overlay || !sheet || !items.length) {
+        console.error('[BS] missing elements, aborting');
+        return;
+      }
+
+      /* ---- Service data (100% from official page) ---- */
+      var WA_DEFAULT = 'https://wa.me/1849207092';
+      var WA_FOURWHEEL = 'https://wa.me/18493570003';
+
+      var svcData = {
+        camping: {
+          emoji: '🏕️',
+          title: 'Camping',
+          sub: 'Camping grupal, glamping de pareja o acceso libre: elige tu forma de dormir junto al río.',
+          images: [
+            'assets/progressive/camping_hero.jpg',
+            'assets/progressive/85bbcae0.jpg',
+            'assets/progressive/glamping.jpg',
+            'assets/progressive/acceso.jpg'
+          ],
+          badge: 'Más elegido',
+          plans: [
+            {
+              name: 'Camping Grupal',
+              emoji: '⛺',
+              price: 'RD$3,000',
+              unit: 'por persona',
+              note: 'Mínimo 10 personas',
+              sched: [
+                { label: 'Check-in', val: '9:00 a. m.' },
+                { label: 'Check-out', val: '11:00 a. m.' }
+              ],
+              incl: [
+                { icon: '⛺', text: 'Derecho a área de camping' },
+                { icon: '🍽️', text: 'Desayuno, almuerzo y cena' },
+                { icon: '🏊', text: 'Acceso a áreas recreativas' },
+                { icon: '🌊', text: 'Uso del río' },
+                { icon: '🩹', text: 'Botiquín de primeros auxilios' },
+                { icon: '🤝', text: 'Espacios comunes' },
+                { icon: '🚣', text: 'Excursión incluida' },
+                { icon: '🔥', text: 'Fogata' },
+                { icon: '🚿', text: 'Baños y duchas' },
+                { icon: '🔒', text: 'Seguridad' },
+                { icon: '🏖️', text: 'Área del balneario' }
+              ],
+              warn: [
+                'Cada persona debe llevar su equipo de camping',
+                'El consumo de alcohol debe ser moderado y responsable',
+                'Seguir las normas del espacio y las indicaciones del personal'
+              ],
+              wa: WA_DEFAULT + '?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas%E2%80%A6',
+              cta: 'Reservar camping grupal'
+            },
+            {
+              name: 'Glamping para Parejas',
+              emoji: '💕',
+              price: 'RD$8,000',
+              unit: 'por pareja',
+              sched: [
+                { label: 'Check-in', val: '3:00 p. m.' },
+                { label: 'Check-out', val: '11:00 a. m.' }
+              ],
+              incl: [
+                { icon: '🏡', text: 'Casa de campaña equipada' },
+                { icon: '🛏️', text: 'Colchón, sábanas, almohadas, ventilador' },
+                { icon: '🍽️', text: 'Comidas completas' },
+                { icon: '🚣', text: 'Excursión guiada' },
+                { icon: '🔥', text: 'Fogata' },
+                { icon: '🚿', text: 'Baños y duchas' },
+                { icon: '🔒', text: 'Seguridad' },
+                { icon: '🏖️', text: 'Área del balneario' }
+              ],
+              menu: [
+                { name: 'Desayuno', val: 'Chocolate caliente, huevos y pan' },
+                { name: 'Almuerzo', val: 'Comida típica (la bandera)' },
+                { name: 'Cena', val: 'Los tres golpes (mangú, huevos, queso y salami)' }
+              ],
+              warn: [
+                'No se permiten niños en el glamping de pareja',
+                'Persona extra tiene un costo adicional',
+                'Excursión 9:00 a. m. — niños a partir de 9 años — sin alcohol antes ni durante'
+              ],
+              wa: WA_DEFAULT + '?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas%E2%80%A6',
+              cta: 'Reservar glamping'
+            },
+            {
+              name: 'Acceso al Área de Camping',
+              emoji: '🎒',
+              price: 'RD$700',
+              unit: 'por persona',
+              note: 'Mínimo 10 personas',
+              incl: [
+                { icon: '🚿', text: 'Acceso a baños y duchas' },
+                { icon: '🔥', text: 'Fogata' },
+                { icon: '🏖️', text: 'Área de balneario' },
+                { icon: '🔒', text: 'Seguridad' }
+              ],
+              wa: WA_DEFAULT + '?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas%E2%80%A6',
+              cta: 'Reservar acceso'
+            }
+          ]
+        },
+        excursion: {
+          emoji: '🚣',
+          title: 'Excursión Río Sonador',
+          sub: 'Una experiencia guiada para quienes aman la naturaleza y la aventura. Un recorrido para conectar con lo esencial y disfrutar del entorno de forma segura.',
+          images: [
+            'assets/progressive/9d1519dc.jpg',
+            'assets/progressive/2d7c625e.jpg',
+            'assets/progressive/22583405.jpg',
+            'assets/progressive/52560b04.jpg',
+            'assets/progressive/e5681a45.jpg'
+          ],
+          badge: '',
+          price: 'RD$1,200',
+          priceUnit: 'por persona',
+          sched: [
+            { label: 'Entrada', val: '9:00 a. m.' },
+            { label: 'Recorrido', val: '3 km ida y vuelta' }
+          ],
+          incl: [
+            { icon: '🧭', text: 'Guía local' },
+            { icon: '🦺', text: 'Chaleco salvavidas' },
+            { icon: '⛑️', text: 'Casco protector' },
+            { icon: '🏊', text: 'Recorrido a charcos' },
+            { icon: '🩹', text: 'Botiquín de primeros auxilios' },
+            { icon: '🍽️', text: 'Almuerzo criollo (moro, locrio o arroz con habichuelas y pollo)' }
+          ],
+          warn: [
+            'No consumir alcohol antes ni durante la excursión',
+            'Usar leggings, calzado cerrado y ropa cómoda, preferiblemente deportiva'
+          ],
+          wa: WA_DEFAULT + '?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*Excursion*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas%E2%80%A6',
+          cta: 'Reservar excursión'
+        },
+        fourwheel: {
+          emoji: '🚙',
+          title: 'Fourwheel Tours',
+          sub: 'Tours de fourwheel con @donsamueladventure: 2 a 3 horas de aventura con 3 paradas dentro de los ríos.',
+          images: [
+            'assets/progressive/94c56be1.jpg',
+            'assets/progressive/90c4fa95.jpg',
+            'assets/progressive/cfb70b53.jpg',
+            'assets/progressive/9eb4c379.jpg'
+          ],
+          badge: '3 horarios',
+          price: 'RD$3,000',
+          priceUnit: 'por fourwheel · por persona',
+          price2: 'RD$4,500',
+          price2Unit: 'fourwheel para 2 personas',
+          sched: [
+            { label: 'Tour 1', val: '9:30 a. m.' },
+            { label: 'Tour 2', val: '1:30 p. m.' },
+            { label: 'Tour 3', val: '2:30 p. m.' }
+          ],
+          desc: 'Recorre el paraíso natural de Yásica, Puerto Plata: el río Sonador. Reserva con los tuyos y descubre las maravillas de R.D.',
+          wa: WA_FOURWHEEL,
+          cta: 'Reservar por WhatsApp'
+        },
+        balneario: {
+          emoji: '🏊',
+          title: 'Áreas Recreativas',
+          sub: 'Alquila un espacio exclusivo frente al río para tus actividades en la Finca Papirucho.',
+          images: [
+            'assets/progressive/443b56bc.jpg'
+          ],
+          badge: 'Alquiler',
+          price: 'RD$3,000',
+          priceUnit: 'por día',
+          incl: [
+            { icon: '🌊', text: 'Espacio amplio frente al río' },
+            { icon: '🔥', text: 'Área de fogón o cocina' },
+            { icon: '🚿', text: 'Baños' },
+            { icon: '🔒', text: 'Personal de apoyo para seguridad y atención' }
+          ],
+          wa: WA_DEFAULT + '?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*Areas%20Recreativas*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas%E2%80%A6',
+          cta: 'Reservar espacio'
+        }
+      };
+
+      /* ---- Open / Close ---- */
+      window.openSheet = function (svc) {
+        var d = svcData[svc];
+        if (!d) return;
+        console.log('[BS] opening', svc);
+        document.body.style.overflow = 'hidden';
+        buildHero(d);
+        buildBody(svc, d);
+        overlay.setAttribute('aria-hidden', 'false');
+        sheet.setAttribute('aria-hidden', 'false');
+        overlay.classList.add('open');
+        sheet.classList.add('open');
+        sheet.scrollTop = 0;
+        /* Move focus into the dialog for keyboard/screen-reader users */
+        closeBtn.focus();
+        updateScrollHint();
+      };
+
+      function closeSheet() {
+        document.body.style.overflow = '';
+        overlay.classList.remove('open');
+        sheet.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        sheet.setAttribute('aria-hidden', 'true');
+        heroEl.innerHTML = '';
+        bodyEl.innerHTML = '';
+        scrollHint.classList.remove('show');
+      }
+
+      closeBtn.addEventListener('click', closeSheet);
+      overlay.addEventListener('click', closeSheet);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
+      });
+
+      /* ---- Scroll hint: show arrow while there is more content below ---- */
+      function updateScrollHint() {
+        if (!scrollHint) return;
+        var atBottom = sheet.scrollTop + sheet.clientHeight >= sheet.scrollHeight - 4;
+        var overflow = sheet.scrollHeight > sheet.clientHeight + 4;
+        scrollHint.classList.toggle('show', !!overflow && !atBottom);
+      }
+
+      sheet.addEventListener('scroll', updateScrollHint, { passive: true });
+      window.addEventListener('resize', updateScrollHint);
+
+      /* ---- Hero carousel ---- */
+      function buildHero(d) {
+        var html = '';
+        if (d.images.length > 1) {
+          html += '<div class="bs-carousel"><div class="bs-carousel-track">';
+          d.images.forEach(function (src) {
+            html += '<div class="bs-slide"><img src="' + src + '" alt="' + d.title + '"></div>';
+          });
+          html += '</div>';
+          html += '<button class="bs-car-nav bs-car-prev" aria-label="Anterior">\u2039</button>';
+          html += '<button class="bs-car-nav bs-car-next" aria-label="Siguiente">\u203a</button>';
+          html += '<div class="bs-car-dots">';
+          d.images.forEach(function (_, i) {
+            html += '<button' + (i === 0 ? ' class="active"' : '') + ' aria-label="Imagen ' + (i + 1) + '"></button>';
+          });
+          html += '</div></div>';
+        } else {
+          html = '<img src="' + d.images[0] + '" alt="' + d.title + '" style="width:100%;height:100%;object-fit:cover">';
+        }
+        heroEl.innerHTML = html;
+
+        /* Wire carousel if >1 image */
+        if (d.images.length > 1) {
+          var track = heroEl.querySelector('.bs-carousel-track');
+          var prevBtn = heroEl.querySelector('.bs-car-prev');
+          var nextBtn = heroEl.querySelector('.bs-car-next');
+          var dots = heroEl.querySelectorAll('.bs-car-dots button');
+          var idx = 0;
+          var total = d.images.length;
+
+          function go(n) {
+            idx = (n + total) % total;
+            track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+            dots.forEach(function (dot, i) { dot.classList.toggle('active', i === idx); });
+          }
+          prevBtn.addEventListener('click', function () { go(idx - 1); });
+          nextBtn.addEventListener('click', function () { go(idx + 1); });
+          dots.forEach(function (dot, i) { dot.addEventListener('click', function () { go(i); }); });
+
+          /* Touch swipe on hero */
+          var sx = 0, sdx = 0, dragging = false;
+          heroEl.addEventListener('pointerdown', function (e) {
+            sx = e.clientX; sdx = 0; dragging = true;
+            /* Keep receiving pointer events even if the finger leaves the hero */
+            try { heroEl.setPointerCapture(e.pointerId); } catch (_) {}
+            track.style.transition = 'none';
+          });
+          heroEl.addEventListener('pointermove', function (e) {
+            if (!dragging) return;
+            sdx = e.clientX - sx;
+            var pct = -idx * 100 + (sdx / heroEl.offsetWidth * 100);
+            track.style.transform = 'translateX(' + pct + '%)';
+          });
+          function endDrag() {
+            if (!dragging) return;
+            dragging = false;
+            track.style.transition = '';
+            if (Math.abs(sdx) > 40) { sdx < 0 ? go(idx + 1) : go(idx - 1); } else go(idx);
+          }
+          heroEl.addEventListener('pointerup', endDrag);
+          heroEl.addEventListener('pointercancel', endDrag);
+        }
+      }
+
+      /* ---- Build body content ---- */
+      function buildBody(svc, d) {
+        var h = '';
+        if (svc === 'camping') {
+          h += '<div class="bs-title">' + d.title + '</div>';
+          h += '<div class="bs-sub">' + d.sub + '</div>';
+          d.plans.forEach(function (p) {
+            h += '<div class="bs-plan">';
+            h += '<div class="bs-plan-head">';
+            h += '<div class="bs-plan-emoji" aria-hidden="true">' + p.emoji + '</div>';
+            h += '<div class="bs-plan-info">';
+            h += '<div class="bs-plan-name">' + p.name + '</div>';
+            h += '</div>';
+            h += '</div>';
+            h += '<div class="bs-plan-body">';
+            h += '<div class="bs-price-block">' + p.price + ' <small>' + p.unit + '</small></div>';
+            if (p.note) h += '<div class="bs-note">' + p.note + '</div>';
+            if (p.sched && p.sched.length) {
+              h += '<div class="bs-sched">';
+              p.sched.forEach(function (s) {
+                h += '<div class="bs-sched-item"><div class="bs-sched-label">' + s.label + '</div><div class="bs-sched-val">' + s.val + '</div></div>';
+              });
+              h += '</div>';
+            }
+            if (p.incl && p.incl.length) {
+              h += '<div class="bs-sec-title">Qué incluye</div>';
+              h += '<div class="bs-grid">';
+              p.incl.forEach(function (item) {
+                h += '<div class="bs-grid-item"><div class="bs-grid-icon" aria-hidden="true">' + item.icon + '</div><span>' + item.text + '</span></div>';
+              });
+              h += '</div>';
+            }
+            if (p.menu && p.menu.length) {
+              h += '<div class="bs-sec-title">Menú incluido</div>';
+              h += '<div class="bs-menu">';
+              p.menu.forEach(function (m) {
+                h += '<div class="bs-menu-row"><span>' + m.name + '</span><span>' + m.val + '</span></div>';
+              });
+              h += '</div>';
+            }
+            if (p.warn && p.warn.length) {
+              h += '<div class="bs-warn">';
+              h += '<div class="bs-warn-title">Condiciones</div>';
+              h += '<ul class="bs-warn-list">';
+              p.warn.forEach(function (w) { h += '<li>' + w + '</li>'; });
+              h += '</ul></div>';
+            }
+            h += '<a class="bs-wa" href="' + p.wa + '" target="_blank" rel="noopener">';
+            h += '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>';
+            h += p.cta + '</a>';
+            h += '</div></div>';
+          });
+        } else {
+          h += '<div class="bs-title">' + d.title + '</div>';
+          h += '<div class="bs-sub">' + d.sub + '</div>';
+          h += '<div class="bs-price-block">' + d.price + ' <small>' + d.priceUnit + '</small></div>';
+          if (d.price2) {
+            h += '<div class="bs-price-block">' + d.price2 + ' <small>' + d.price2Unit + '</small></div>';
+          }
+          if (d.sched && d.sched.length) {
+            h += '<div class="bs-sec-title">Horarios</div>';
+            h += '<div class="bs-sched">';
+            d.sched.forEach(function (s) {
+              h += '<div class="bs-sched-item"><div class="bs-sched-label">' + s.label + '</div><div class="bs-sched-val">' + s.val + '</div></div>';
+            });
+            h += '</div>';
+          }
+          if (d.desc) {
+            h += '<p style="font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:16px">' + d.desc + '</p>';
+          }
+          if (d.incl && d.incl.length) {
+            h += '<div class="bs-sec-title">Qué incluye</div>';
+            h += '<div class="bs-grid">';
+            d.incl.forEach(function (item) {
+              h += '<div class="bs-grid-item"><div class="bs-grid-icon" aria-hidden="true">' + item.icon + '</div><span>' + item.text + '</span></div>';
+            });
+            h += '</div>';
+          }
+          if (d.warn && d.warn.length) {
+            h += '<div class="bs-warn">';
+            h += '<div class="bs-warn-title">Recomendaciones</div>';
+            h += '<ul class="bs-warn-list">';
+            d.warn.forEach(function (w) { h += '<li>' + w + '</li>'; });
+            h += '</ul></div>';
+          }
+          h += '<a class="bs-wa" href="' + d.wa + '" target="_blank" rel="noopener">';
+          h += '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>';
+          h += d.cta + '</a>';
+        }
+        bodyEl.innerHTML = h;
+      }
+
+      /* ---- List item interaction.
+         Click/touch is handled by the inline onclick (window.openSheet).
+         Add keyboard activation (Enter / Space) for accessibility. ---- */
+      items.forEach(function (item) {
+        item.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openSheet(item.getAttribute('data-svc'));
+          }
+        });
+      });
+
+      /* ---- Swipe-down to close ---- */
+      var sy = 0, sdy = 0, sdragging = false;
+      sheet.addEventListener('touchstart', function (e) {
+        if (sheet.scrollTop <= 5) {
+          sy = e.touches[0].clientY;
+          sdragging = true;
+        }
+      }, { passive: true });
+      sheet.addEventListener('touchmove', function (e) {
+        if (!sdragging) return;
+        sdy = e.touches[0].clientY - sy;
+        if (sdy > 0) sheet.style.transform = 'translateY(' + sdy + 'px)';
+      }, { passive: true });
+      sheet.addEventListener('touchend', function () {
+        if (!sdragging) return;
+        sdragging = false;
+        if (sdy > 100) closeSheet();
+        sheet.style.transform = '';
+        sdy = 0;
+      });
+    })();
+  </script>
+  <!-- ===== Galería lightbox ===== -->
+  <div class="lb-overlay" id="lb-overlay" aria-hidden="true">
+    <div class="lb-frame" role="dialog" aria-modal="true" aria-label="Visor de imágenes">
+      <button class="lb-close" id="lb-close" aria-label="Cerrar imagen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"
+          aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+      <div class="lb-img-wrap"><img id="lb-img" alt=""></div>
+      <div class="lb-caption" id="lb-caption"></div>
+      <div class="lb-counter" id="lb-counter"></div>
+    </div>
+    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Imagen anterior">‹</button>
+    <button class="lb-nav lb-next" id="lb-next" aria-label="Imagen siguiente">›</button>
+  </div>
+
+  <script>
+    /* ============================================================
+       GALERÍA LIGHTBOX — open gallery photos in-page, no navigation
+       ============================================================ */
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll('.gal a'));
+      if (!links.length) return;
+
+      var overlay = document.getElementById('lb-overlay');
+      var imgEl = document.getElementById('lb-img');
+      var captionEl = document.getElementById('lb-caption');
+      var counterEl = document.getElementById('lb-counter');
+      var closeBtn = document.getElementById('lb-close');
+      var prevBtn = document.getElementById('lb-prev');
+      var nextBtn = document.getElementById('lb-next');
+      var idx = 0;
+      var lastFocus = null;
+
+      function render() {
+        var link = links[idx];
+        var img = link.querySelector('img');
+        var cap = link.querySelector('.cap');
+        imgEl.src = link.href;
+        imgEl.alt = img ? img.getAttribute('alt') : '';
+        captionEl.textContent = cap ? cap.textContent.trim() : '';
+        counterEl.textContent = (idx + 1) + ' / ' + links.length;
+      }
+
+      function open(i) {
+        idx = (i + links.length) % links.length;
+        lastFocus = document.activeElement;
+        render();
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function close() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus();
+      }
+
+      links.forEach(function (link, i) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          open(i);
+        });
+      });
+
+      closeBtn.addEventListener('click', close);
+      prevBtn.addEventListener('click', function () { open(idx - 1); });
+      nextBtn.addEventListener('click', function () { open(idx + 1); });
+
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) close();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (!overlay.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') open(idx - 1);
+        if (e.key === 'ArrowRight') open(idx + 1);
+      });
+
+      /* Swipe support on touch */
+      var sx = 0;
+      overlay.addEventListener('touchstart', function (e) {
+        sx = e.changedTouches[0].clientX;
+      }, { passive: true });
+      overlay.addEventListener('touchend', function (e) {
+        var dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 45) { dx < 0 ? open(idx + 1) : open(idx - 1); }
+      }, { passive: true });
+    })();
+  </script>
   <a class="wa-float"
     href="https://wa.me/1849207092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20quiero%20hacer%20una%20reserva."
     target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="30" height="30"
@@ -3811,6 +5189,7 @@
       <path
         d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5-.1-.2-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
     </svg></a>
+
 </body>
 
 </html>

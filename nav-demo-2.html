@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo 2 — Navegación Móvil Finca Papirucho</title>
+<style>
+/* ===== RESET & VARIABLES ===== */
+:root{
+  --green-dark:#1b5e20;
+  --green:#2e7d32;
+  --green-light:#4caf50;
+  --orange:#ff9800;
+  --orange-dark:#e68900;
+  --bg:#f8f9fa;
+  --card:#ffffff;
+  --ink:#1a1a1a;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --radius:16px;
+  --radius-sm:12px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 8px 30px rgba(0,0,0,.15);
+  --transition:all .3s cubic-bezier(.22,.9,.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-top:62px}
+img{display:block;max-width:100%;height:auto}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ===== STICKY SWITCHER ===== */
+.switcher{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--green-dark);padding:12px 14px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.switcher-title{color:#fff;font-weight:700;font-size:.95rem;text-align:center;margin-bottom:10px;letter-spacing:.3px}
+.sw-row{display:flex;gap:5px;background:rgba(255,255,255,.1);border-radius:12px;padding:3px}
+.sw-btn{flex:1;border:none;background:transparent;color:rgba(255,255,255,.5);font-weight:700;font-size:.68rem;letter-spacing:.2px;padding:10px 4px;border-radius:10px;transition:var(--transition);-webkit-tap-highlight-color:transparent}
+.sw-btn.active{background:#fff;color:var(--green-dark);box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.sw-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,.08)}
+.sw-subtitle{text-align:center;color:rgba(255,255,255,.55);font-size:.62rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:8px}
+
+/* ===== DEMO PANELS ===== */
+.demo{display:none;padding:16px 14px 60px}
+.demo.active{display:block}
+
+/* ===== SHARED CARD STYLES ===== */
+.card{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:var(--transition)}
+.card:hover{box-shadow:var(--shadow-lg)}
+.badge{display:inline-flex;align-items:center;background:var(--orange);color:#fff;font-weight:800;font-size:.72rem;padding:4px 10px;border-radius:20px;letter-spacing:.3px}
+.badge-sm{font-size:.62rem;padding:3px 8px}
+.wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;font-weight:700;font-size:.85rem;padding:13px 18px;border-radius:var(--radius-sm);border:none;transition:var(--transition);box-shadow:0 6px 18px rgba(37,211,102,.25)}
+.wa-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(37,211,102,.32)}
+.wa-btn svg{width:18px;height:18px;flex-shrink:0}
+.section-title{font-weight:800;font-size:1.1rem;color:var(--green-dark);margin-bottom:4px}
+.section-desc{color:var(--muted);font-size:.78rem;margin-bottom:16px;line-height:1.5}
+.tag{display:inline-block;background:var(--bg);color:var(--green-dark);font-size:.68rem;font-weight:600;padding:5px 10px;border-radius:20px;border:1px solid var(--border)}
+
+/* ======================================================
+   OPCIÓN 1 — CARRUSEL SWIPE / TARJETAS DESLIZABLES
+   ====================================================== */
+.c1-pills{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 0;-webkit-overflow-scrolling:touch}
+.c1-pills::-webkit-scrollbar{display:none}
+.c1-pill{flex:0 0 auto;scroll-snap-align:start;border:2px solid var(--border);background:var(--card);color:var(--muted);font-weight:700;font-size:.75rem;padding:9px 16px;border-radius:10px;transition:var(--transition);white-space:nowrap}
+.c1-pill.active{border-color:var(--green);background:var(--green);color:#fff;box-shadow:0 4px 12px rgba(46,125,50,.25)}
+.c1-scroll-wrap{position:relative}
+.c1-scroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 16px;-webkit-overflow-scrolling:touch}
+.c1-scroll::-webkit-scrollbar{display:none}
+.c1-card{flex:0 0 82%;scroll-snap-align:start;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.c1-img{width:100%;height:180px;display:flex;align-items:flex-end;justify-content:space-between;padding:12px 14px;position:relative}
+.c1-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 60%);pointer-events:none}
+.c1-img-badge{position:relative;z-index:1}
+.c1-img-emoji{position:relative;z-index:1;font-size:2rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
+.c1-card-body{padding:16px}
+.c1-card-title{font-weight:800;font-size:1rem;color:var(--green-dark);margin-bottom:2px}
+.c1-card-sub{color:var(--muted);font-size:.75rem;margin-bottom:10px}
+.c1-card-price{display:inline-flex;align-items:baseline;gap:5px;background:var(--bg);border-left:3px solid var(--orange);padding:8px 14px;border-radius:10px;margin-bottom:12px;font-weight:900;font-size:1rem;color:var(--green-dark)}
+.c1-card-price small{font-weight:600;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.c1-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.c1-list li{display:flex;align-items:flex-start;gap:7px;font-size:.8rem;color:var(--ink);font-weight:500}
+.c1-list li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+.c1-peek{position:absolute;right:0;top:0;bottom:0;width:60px;background:linear-gradient(to left,rgba(248,249,250,.95),transparent);pointer-events:none;z-index:2;display:flex;align-items:center;justify-content:flex-end;padding-right:8px}
+.c1-peek svg{width:28px;height:28px;color:var(--green);animation:peekBounce 2s ease-in-out infinite}
+@keyframes peekBounce{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.c1-dots{display:flex;justify-content:center;gap:6px;padding:8px 0 4px}
+.c1-dot{width:6px;height:6px;border-radius:50%;background:var(--border);border:none;padding:0;transition:var(--transition)}
+.c1-dot.active{background:var(--green);width:18px;border-radius:4px}
+
+/* ======================================================
+   OPCIÓN 2 — LISTA COMPACTA + BOTTOM SHEET
+   ====================================================== */
+.c2-list{display:flex;flex-direction:column;gap:10px}
+.c2-item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow);cursor:pointer;transition:var(--transition);-webkit-tap-highlight-color:transparent}
+.c2-item:active{transform:scale(.98);box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.c2-thumb{width:64px;height:64px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;position:relative}
+.c2-info{flex:1;min-width:0}
+.c2-cat{font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:2px}
+.c2-name{font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c2-price-row{display:flex;align-items:center;gap:6px}
+.c2-price{font-weight:800;font-size:.85rem;color:var(--green-dark)}
+.c2-unit{font-size:.68rem;color:var(--muted)}
+.c2-arrow{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--bg);display:grid;place-items:center;color:var(--green);transition:var(--transition)}
+.c2-item:active .c2-arrow{background:var(--green);color:#fff}
+.c2-wa-float{position:fixed;bottom:24px;right:20px;z-index:50;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;display:grid;place-items:center;border:none;box-shadow:0 8px 24px rgba(37,211,102,.35);transition:var(--transition)}
+.c2-wa-float:active{transform:scale(.92)}
+.c2-wa-float svg{width:28px;height:28px}
+
+/* Bottom Sheet */
+.bs-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease}
+.bs-overlay.open{opacity:1;visibility:visible}
+.bs-sheet{position:fixed;bottom:0;left:0;right:0;z-index:2001;background:var(--card);border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .45s cubic-bezier(.22,.9,.3,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bs-sheet.open{transform:translateY(0)}
+.bs-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:10px auto 0}
+.bs-close{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;display:grid;place-items:center;border:none;font-size:1.2rem;z-index:10;transition:var(--transition)}
+.bs-close:active{transform:scale(.9);background:rgba(0,0,0,.7)}
+.bs-hero{width:100%;height:200px;display:flex;align-items:flex-end;padding:16px;position:relative;margin-bottom:4px}
+.bs-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 55%);pointer-events:none}
+.bs-hero-emoji{position:relative;z-index:1;font-size:2.5rem;filter:drop-shadow(0 3px 8px rgba(0,0,0,.3))}
+.bs-hero-badge{position:absolute;top:14px;left:14px;z-index:1}
+.bs-body{padding:8px 20px 34px}
+.bs-title{font-weight:800;font-size:1.25rem;color:var(--green-dark);margin-bottom:4px}
+.bs-subtitle{color:var(--muted);font-size:.82rem;margin-bottom:14px}
+.bs-hours{display:flex;gap:10px;margin-bottom:16px}
+.bs-hour-item{flex:1;background:var(--bg);border-radius:10px;padding:10px 12px;text-align:center}
+.bs-hour-label{font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.bs-hour-val{font-weight:700;font-size:.82rem;color:var(--green-dark)}
+.bs-section-title{font-weight:700;font-size:.82rem;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.bs-section-title::before{content:'';width:3px;height:14px;background:var(--orange);border-radius:2px;flex-shrink:0}
+.bs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.bs-grid-item{display:flex;align-items:flex-start;gap:8px;background:var(--bg);border-radius:10px;padding:10px;font-size:.76rem;color:var(--ink);font-weight:500;line-height:1.35}
+.bs-grid-item .bs-gi-icon{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:.9rem}
+.bs-menu{background:var(--bg);border-radius:12px;padding:14px;margin-bottom:18px}
+.bs-menu-title{font-weight:700;font-size:.75rem;color:var(--green-dark);margin-bottom:8px}
+.bs-menu-list{display:flex;flex-direction:column;gap:4px}
+.bs-menu-item{display:flex;justify-content:space-between;font-size:.76rem;color:var(--ink);font-weight:500;padding:4px 0;border-bottom:1px dashed var(--border)}
+.bs-menu-item:last-child{border:none}
+.bs-conditions{background:#fff8e1;border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:18px}
+.bs-conditions-title{font-weight:700;font-size:.72rem;color:var(--orange-dark);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.bs-conditions-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.bs-conditions-list li{font-size:.74rem;color:var(--ink);font-weight:500;padding-left:14px;position:relative}
+.bs-conditions-list li::before{content:"⚠";position:absolute;left:0;font-size:.65rem}
+
+/* ======================================================
+   OPCIÓN 3 — ACORDEONES ULTRA COMPACTOS
+   ====================================================== */
+.c3-wrap{display:flex;flex-direction:column;gap:10px}
+.c3-item{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:var(--transition)}
+.c3-item[open]{box-shadow:var(--shadow-lg)}
+.c3-summary{list-style:none;display:flex;align-items:center;gap:0;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;min-height:72px}
+.c3-summary::-webkit-details-marker{display:none}
+.c3-summary::marker{display:none;content:''}
+.c3-bg{position:absolute;inset:0;z-index:0}
+.c3-bg::after{content:'';position:absolute;inset:0;z-index:1}
+.c3-summary-text{position:relative;z-index:2;flex:1;display:flex;align-items:center;gap:12px;padding:14px 16px}
+.c3-summary-emoji{font-size:1.6rem;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));flex-shrink:0}
+.c3-summary-info{flex:1;min-width:0}
+.c3-summary-name{font-weight:800;font-size:.92rem;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c3-summary-price{font-weight:700;font-size:.72rem;color:rgba(255,255,255,.85);margin-top:1px}
+.c3-summary-arrow{position:relative;z-index:2;flex-shrink:0;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;color:#fff;transition:var(--transition);margin-right:14px}
+.c3-item[open] .c3-summary-arrow{background:var(--orange);transform:rotate(180deg)}
+.c3-body{padding:16px}
+.c3-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.c3-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(46,125,50,.08);color:var(--green-dark);font-size:.72rem;font-weight:600;padding:6px 11px;border-radius:20px;border:1px solid rgba(46,125,50,.15)}
+.c3-chip .c3-chip-icon{font-size:.8rem}
+.c3-rules{background:#fff3e0;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.c3-rules-title{font-weight:700;font-size:.68rem;color:var(--orange-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.c3-rules-list{list-style:none;display:flex;flex-direction:column;gap:3px}
+.c3-rules-list li{font-size:.74rem;color:var(--ink);font-weight:500;padding-left:14px;position:relative;line-height:1.4}
+.c3-rules-list li::before{content:"•";position:absolute;left:0;color:var(--orange);font-weight:800}
+.c3-detail-price{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:var(--bg);border-radius:10px;border-left:3px solid var(--orange)}
+.c3-detail-price-val{font-weight:900;font-size:1.05rem;color:var(--green-dark)}
+.c3-detail-price-unit{font-size:.68rem;color:var(--muted);font-weight:600}
+
+@media(min-width:760px){
+  .demo{max-width:540px;margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SWITCHER ===== -->
+<div class="switcher">
+  <div class="switcher-title">Finca Papirucho — Demo Móvil</div>
+  <div class="sw-row">
+    <button class="sw-btn active" data-demo="c1">1. Carrusel Swipe</button>
+    <button class="sw-btn" data-demo="c2">2. Bottom Sheet</button>
+    <button class="sw-btn" data-demo="c3">3. Acordeón</button>
+  </div>
+  <div class="sw-subtitle" id="sw-sub">Carrusel Horizontal Deslizable</div>
+</div>
+
+<!-- ==========================================================
+     OPCIÓN 1 — CARRUSEL SWIPE / TARJETAS DESLIZABLES
+     ========================================================== -->
+<section class="demo active" id="demo-c1">
+  <div class="section-title">Carrusel Swipe</div>
+  <div class="section-desc">Desliza horizontalmente para explorar cada servicio. La flecha indica que hay más contenido.</div>
+
+  <!-- PILLS -->
+  <div class="c1-pills" id="c1-pills">
+    <button class="c1-pill active" data-svc="camping">🏕️ Camping</button>
+    <button class="c1-pill" data-svc="excursion">🚣 Excursión</button>
+    <button class="c1-pill" data-svc="fourwheel">🚙 Fourwheel</button>
+    <button class="c1-pill" data-svc="balneario">🏊 Balneario</button>
+  </div>
+
+  <!-- CAROUSEL -->
+  <div class="c1-scroll-wrap">
+    <div class="c1-scroll" id="c1-scroll">
+
+      <!-- CAMPING -->
+      <div class="c1-card" data-group="camping">
+        <div class="c1-img" style="background:linear-gradient(135deg,#1b5e20,#2e7d32)">
+          <div class="c1-img-emoji">🏕️</div>
+          <div class="c1-img-badge"><span class="badge">Más elegido</span></div>
+        </div>
+        <div class="c1-card-body">
+          <div class="c1-card-title">Camping Finca Papirucho</div>
+          <div class="c1-card-sub">Una noche bajo las estrellas</div>
+          <div class="c1-card-price">RD$3,000 <small>por persona</small></div>
+          <ul class="c1-list">
+            <li>Desayuno, almuerzo y cena incluidos</li>
+            <li>Derecho a área de camping completa</li>
+            <li>Acceso al río y zonas recreativas</li>
+          </ul>
+          <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20el%20servicio%20de%20camping." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- EXCURSIÓN -->
+      <div class="c1-card" data-group="excursion">
+        <div class="c1-img" style="background:linear-gradient(135deg,#1565c0,#1976d2)">
+          <div class="c1-img-emoji">🚣</div>
+          <div class="c1-img-badge"><span class="badge badge-sm">Desde RD$1,200</span></div>
+        </div>
+        <div class="c1-card-body">
+          <div class="c1-card-title">Excursión Río Sonador</div>
+          <div class="c1-card-sub">Explora el corazón del río</div>
+          <div class="c1-card-price">RD$1,200 <small>por persona</small></div>
+          <ul class="c1-list">
+            <li>Guía local certificado incluido</li>
+            <li>Chaleco salvavidas y casco</li>
+            <li>Almuerzo criollo en el trayecto</li>
+          </ul>
+          <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20la%20excursi%C3%B3n%20por%20el%20r%C3%ADo." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- FOURWHEEL -->
+      <div class="c1-card" data-group="fourwheel">
+        <div class="c1-img" style="background:linear-gradient(135deg,#e65100,#ef6c00)">
+          <div class="c1-img-emoji">🚙</div>
+          <div class="c1-img-badge"><span class="badge badge-sm">3 horarios</span></div>
+        </div>
+        <div class="c1-card-body">
+          <div class="c1-card-title">Fourwheel Tours</div>
+          <div class="c1-card-sub">Aventura a 4 gomas por el río</div>
+          <div class="c1-card-price">RD$3,000 <small>por persona</small></div>
+          <ul class="c1-list">
+            <li>2 a 3 horas de recorrido total</li>
+            <li>3 paradas dentro del río</li>
+            <li>Tours: 9:30am · 1:30pm · 2:30pm</li>
+          </ul>
+          <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20fourwheel." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- BALNEARIO -->
+      <div class="c1-card" data-group="balneario">
+        <div class="c1-img" style="background:linear-gradient(135deg,#00695c,#00897b)">
+          <div class="c1-img-emoji">🏊</div>
+          <div class="c1-img-badge"><span class="badge badge-sm">Día completo</span></div>
+        </div>
+        <div class="c1-card-body">
+          <div class="c1-card-title">Áreas Recreativas</div>
+          <div class="c1-card-sub">Balneario y espacios de diversión</div>
+          <div class="c1-card-price">RD$3,000 <small>por día</small></div>
+          <ul class="c1-list">
+            <li>Espacio amplio frente al río</li>
+            <li>Área de fogón y cocina disponible</li>
+            <li>Baños y seguridad incluidos</li>
+          </ul>
+          <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20espacio%20en%20el%20balneario." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <!-- Peek arrow -->
+    <div class="c1-peek" id="c1-peek">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <!-- Dots -->
+    <div class="c1-dots" id="c1-dots"></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     OPCIÓN 2 — LISTA COMPACTA + BOTTOM SHEET
+     ========================================================== -->
+<section class="demo" id="demo-c2">
+  <div class="section-title">Lista + Bottom Sheet</div>
+  <div class="section-desc">Toca un servicio para ver el desglose completo en un panel deslizante.</div>
+
+  <div class="c2-list">
+    <!-- CAMPING -->
+    <div class="c2-item" data-sheet="camping">
+      <div class="c2-thumb" style="background:linear-gradient(135deg,#1b5e20,#2e7d32)">🏕️</div>
+      <div class="c2-info">
+        <div class="c2-cat">Ecoturismo</div>
+        <div class="c2-name">Camping Finca Papirucho</div>
+        <div class="c2-price-row">
+          <span class="c2-price">RD$3,000</span>
+          <span class="c2-unit">/ persona</span>
+        </div>
+      </div>
+      <div class="c2-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+    </div>
+
+    <!-- EXCURSIÓN -->
+    <div class="c2-item" data-sheet="excursion">
+      <div class="c2-thumb" style="background:linear-gradient(135deg,#1565c0,#1976d2)">🚣</div>
+      <div class="c2-info">
+        <div class="c2-cat">Aventura</div>
+        <div class="c2-name">Excursión Río Sonador</div>
+        <div class="c2-price-row">
+          <span class="c2-price">RD$1,200</span>
+          <span class="c2-unit">/ persona</span>
+        </div>
+      </div>
+      <div class="c2-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+    </div>
+
+    <!-- FOURWHEEL -->
+    <div class="c2-item" data-sheet="fourwheel">
+      <div class="c2-thumb" style="background:linear-gradient(135deg,#e65100,#ef6c00)">🚙</div>
+      <div class="c2-info">
+        <div class="c2-cat">Extremo</div>
+        <div class="c2-name">Fourwheel Tours</div>
+        <div class="c2-price-row">
+          <span class="c2-price">RD$3,000</span>
+          <span class="c2-unit">/ persona</span>
+        </div>
+      </div>
+      <div class="c2-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+    </div>
+
+    <!-- BALNEARIO -->
+    <div class="c2-item" data-sheet="balneario">
+      <div class="c2-thumb" style="background:linear-gradient(135deg,#00695c,#00897b)">🏊</div>
+      <div class="c2-info">
+        <div class="c2-cat">Relax</div>
+        <div class="c2-name">Áreas Recreativas</div>
+        <div class="c2-price-row">
+          <span class="c2-price">RD$3,000</span>
+          <span class="c2-unit">/ día</span>
+        </div>
+      </div>
+      <div class="c2-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+    </div>
+  </div>
+
+  <!-- WhatsApp float -->
+  <button class="c2-wa-float" onclick="window.open('https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20tengo%20una%20consulta.','_blank')">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+  </button>
+</section>
+
+<!-- BOTTOM SHEET -->
+<div class="bs-overlay" id="bs-overlay"></div>
+<div class="bs-sheet" id="bs-sheet">
+  <div class="bs-handle"></div>
+  <button class="bs-close" id="bs-close">✕</button>
+
+  <!-- CONTENT INJECTED BY JS -->
+  <div class="bs-hero" id="bs-hero"><div class="bs-hero-emoji" id="bs-hero-emoji"></div><div class="bs-hero-badge" id="bs-hero-badge"></div></div>
+  <div class="bs-body">
+    <div class="bs-title" id="bs-title"></div>
+    <div class="bs-subtitle" id="bs-subtitle"></div>
+
+    <div class="bs-hours" id="bs-hours"></div>
+
+    <div class="bs-section-title">Qué incluye</div>
+    <div class="bs-grid" id="bs-grid"></div>
+
+    <div class="bs-section-title">Menú incluido</div>
+    <div class="bs-menu" id="bs-menu"></div>
+
+    <div class="bs-section-title">Condiciones</div>
+    <div class="bs-conditions" id="bs-conditions"></div>
+
+    <a class="wa-btn" id="bs-wa" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+      Reservar por WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- ==========================================================
+     OPCIÓN 3 — ACORDEONES ULTRA COMPACTOS
+     ========================================================== -->
+<section class="demo" id="demo-c3">
+  <div class="section-title">Acordeón Ultra Compacto</div>
+  <div class="section-desc">Toca para expandir. Chips de inclusiones, precio visible, todo minimal.</div>
+
+  <div class="c3-wrap">
+
+    <!-- CAMPING -->
+    <details class="c3-item" name="svc3">
+      <summary class="c3-summary">
+        <div class="c3-bg" style="background:linear-gradient(135deg,#1b5e20,#388e3c)"></div>
+        <div class="c3-summary-text">
+          <div class="c3-summary-emoji">🏕️</div>
+          <div class="c3-summary-info">
+            <div class="c3-summary-name">Camping Finca Papirucho</div>
+            <div class="c3-summary-price">Desde RD$700 · Completo RD$3,000</div>
+          </div>
+          <div class="c3-summary-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+      </summary>
+      <div class="c3-body">
+        <div class="c3-detail-price">
+          <div class="c3-detail-price-val">RD$3,000</div>
+          <div class="c3-detail-price-unit">por persona · incluye 3 comidas</div>
+        </div>
+        <div class="c3-chips">
+          <span class="c3-chip"><span class="c3-chip-icon">☕</span> Desayuno</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🍽️</span> Almuerzo</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🍲</span> Cena</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🏊</span> Río</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🔒</span> Seguridad</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🚻</span> Baños</span>
+        </div>
+        <div class="c3-rules">
+          <div class="c3-rules-title">Condiciones</div>
+          <ul class="c3-rules-list">
+            <li>Reservar con 24h de anticipación</li>
+            <li>Niños menores de 5 años no pagan</li>
+            <li>No se permiten mascotas en el área del río</li>
+          </ul>
+        </div>
+        <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20camping." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+          Reservar camping
+        </a>
+      </div>
+    </details>
+
+    <!-- EXCURSIÓN -->
+    <details class="c3-item" name="svc3">
+      <summary class="c3-summary">
+        <div class="c3-bg" style="background:linear-gradient(135deg,#1565c0,#1e88e5)"></div>
+        <div class="c3-summary-text">
+          <div class="c3-summary-emoji">🚣</div>
+          <div class="c3-summary-info">
+            <div class="c3-summary-name">Excursión Río Sonador</div>
+            <div class="c3-summary-price">RD$1,200 por persona</div>
+          </div>
+          <div class="c3-summary-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+      </summary>
+      <div class="c3-body">
+        <div class="c3-detail-price">
+          <div class="c3-detail-price-val">RD$1,200</div>
+          <div class="c3-detail-price-unit">por persona · recorrido 3km ida y vuelta</div>
+        </div>
+        <div class="c3-chips">
+          <span class="c3-chip"><span class="c3-chip-icon">🧭</span> Guía local</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🦺</span> Chaleco</span>
+          <span class="c3-chip"><span class="c3-chip-icon">⛑️</span> Casco</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🍽️</span> Almuerzo</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🩹</span> Botiquín</span>
+        </div>
+        <div class="c3-rules">
+          <div class="c3-rules-title">Condiciones</div>
+          <ul class="c3-rules-list">
+            <li>No apto para niños menores de 6 años</li>
+            <li>Edad mínima: 6 años</li>
+            <li>Peso máximo por persona: 120 kg</li>
+          </ul>
+        </div>
+        <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20la%20excursi%C3%B3n." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+          Reservar excursión
+        </a>
+      </div>
+    </details>
+
+    <!-- FOURWHEEL -->
+    <details class="c3-item" name="svc3">
+      <summary class="c3-summary">
+        <div class="c3-bg" style="background:linear-gradient(135deg,#e65100,#f57c00)"></div>
+        <div class="c3-summary-text">
+          <div class="c3-summary-emoji">🚙</div>
+          <div class="c3-summary-info">
+            <div class="c3-summary-name">Fourwheel Tours</div>
+            <div class="c3-summary-price">RD$3,000 · 2-3 horas</div>
+          </div>
+          <div class="c3-summary-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+      </summary>
+      <div class="c3-body">
+        <div class="c3-detail-price">
+          <div class="c3-detail-price-val">RD$3,000</div>
+          <div class="c3-detail-price-unit">por persona · 3 horarios diarios</div>
+        </div>
+        <div class="c3-chips">
+          <span class="c3-chip"><span class="c3-chip-icon">🧭</span> Guía @donsamueladventure</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🌊</span> 3 paradas en río</span>
+          <span class="c3-chip"><span class="c3-chip-icon">⏱️</span> 2-3 horas</span>
+        </div>
+        <div class="c3-rules">
+          <div class="c3-rules-title">Horarios disponibles</div>
+          <ul class="c3-rules-list">
+            <li>9:30 AM — Recorrido matutino</li>
+            <li>1:30 PM — Recorrido vespertino</li>
+            <li>2:30 PM — Recorrido tarde</li>
+          </ul>
+        </div>
+        <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20fourwheel." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+          Reservar fourwheel
+        </a>
+      </div>
+    </details>
+
+    <!-- BALNEARIO -->
+    <details class="c3-item" name="svc3">
+      <summary class="c3-summary">
+        <div class="c3-bg" style="background:linear-gradient(135deg,#00695c,#009688)"></div>
+        <div class="c3-summary-text">
+          <div class="c3-summary-emoji">🏊</div>
+          <div class="c3-summary-info">
+            <div class="c3-summary-name">Áreas Recreativas</div>
+            <div class="c3-summary-price">RD$3,000 por día</div>
+          </div>
+          <div class="c3-summary-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+      </summary>
+      <div class="c3-body">
+        <div class="c3-detail-price">
+          <div class="c3-detail-price-val">RD$3,000</div>
+          <div class="c3-detail-price-unit">por día · hasta 10 personas</div>
+        </div>
+        <div class="c3-chips">
+          <span class="c3-chip"><span class="c3-chip-icon">🌊</span> Frente al río</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🔥</span> Fogón</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🍳</span> Cocina</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🔒</span> Seguridad</span>
+          <span class="c3-chip"><span class="c3-chip-icon">🚻</span> Baños</span>
+        </div>
+        <div class="c3-rules">
+          <div class="c3-rules-title">Condiciones</div>
+          <ul class="c3-rules-list">
+            <li>Espacio para máximo 10 personas</li>
+            <li>No incluye comidas</li>
+            <li>Hora de apertura: 12:00 PM</li>
+          </ul>
+        </div>
+        <a class="wa-btn" href="https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20espacio%20en%20el%20balneario." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>
+          Reservar espacio
+        </a>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<script>
+(function(){
+  /* ==================
+     SWITCHER
+     ================== */
+  var swBtns = document.querySelectorAll('.sw-btn');
+  var demos = document.querySelectorAll('.demo');
+  var swSub = document.getElementById('sw-sub');
+  var subLabels = {c1:'Carrusel Horizontal Deslizable',c2:'Lista Compacta + Bottom Sheet',c3:'Acordeón Ultra Compacto'};
+  swBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      swBtns.forEach(function(x){x.classList.remove('active')});
+      b.classList.add('active');
+      var id = b.getAttribute('data-demo');
+      demos.forEach(function(d){d.classList.remove('active')});
+      document.getElementById('demo-'+id).classList.add('active');
+      swSub.textContent = subLabels[id];
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  /* ==================
+     OPCIÓN 1: SWIPE CARDS
+     ================== */
+  (function(){
+    var pills = document.querySelectorAll('#c1-pills .c1-pill');
+    var scroll = document.getElementById('c1-scroll');
+    var cards = scroll.querySelectorAll('.c1-card');
+    var dotsWrap = document.getElementById('c1-dots');
+    var peek = document.getElementById('c1-peek');
+    /* Filter by group */
+    var allCards = Array.prototype.slice.call(cards);
+    function filterCards(group){
+      allCards.forEach(function(c){
+        c.style.display = (group === 'all' || c.getAttribute('data-group') === group) ? '' : 'none';
+      });
+      updateDots();
+      scroll.scrollLeft = 0;
+    }
+    pills.forEach(function(p){
+      p.addEventListener('click', function(){
+        pills.forEach(function(x){x.classList.remove('active')});
+        p.classList.add('active');
+        filterCards(p.getAttribute('data-svc'));
+      });
+    });
+    /* Dots */
+    function updateDots(){
+      var visible = allCards.filter(function(c){return c.style.display !== 'none'});
+      dotsWrap.innerHTML = '';
+      visible.forEach(function(_,i){
+        var dot = document.createElement('button');
+        dot.className = 'c1-dot' + (i===0?' active':'');
+        dotsWrap.appendChild(dot);
+      });
+    }
+    updateDots();
+    /* Scroll listener for dots + peek hide */
+    scroll.addEventListener('scroll', function(){
+      var visible = allCards.filter(function(c){return c.style.display !== 'none'});
+      var sLeft = scroll.scrollLeft;
+      var sWidth = scroll.scrollWidth - scroll.clientWidth;
+      var idx = 0;
+      var cumW = 0;
+      for(var i=0;i<visible.length;i++){
+        var cw = visible[i].offsetWidth + 12;
+        if(sLeft >= cumW + cw/2 - 10) idx = i;
+        cumW += cw;
+      }
+      var dots = dotsWrap.querySelectorAll('.c1-dot');
+      dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
+      if(sLeft >= sWidth - 10) peek.style.opacity = '0';
+      else peek.style.opacity = '1';
+    });
+    /* Snap to card on pill click */
+    function snapToCard(group){
+      var target = scroll.querySelector('[data-group="'+group+'"]');
+      if(target){
+        setTimeout(function(){
+          target.scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+        },50);
+      }
+    }
+    pills.forEach(function(p){
+      p.addEventListener('click', function(){
+        snapToCard(p.getAttribute('data-svc'));
+      });
+    });
+  })();
+
+  /* ==================
+     OPCIÓN 2: BOTTOM SHEET
+     ================== */
+  (function(){
+    var overlay = document.getElementById('bs-overlay');
+    var sheet = document.getElementById('bs-sheet');
+    var closeBtn = document.getElementById('bs-close');
+    var items = document.querySelectorAll('.c2-item[data-sheet]');
+    function openSheet(svc){
+      document.body.style.overflow = 'hidden';
+      overlay.classList.add('open');
+      sheet.classList.add('open');
+      populateSheet(svc);
+    }
+    function closeSheet(){
+      document.body.style.overflow = '';
+      overlay.classList.remove('open');
+      sheet.classList.remove('open');
+    }
+    closeBtn.addEventListener('click', closeSheet);
+    overlay.addEventListener('click', closeSheet);
+    items.forEach(function(it){
+      it.addEventListener('click', function(){
+        openSheet(it.getAttribute('data-sheet'));
+      });
+    });
+    /* Swipe down to close */
+    var sy=0, sdy=0, dragging=false;
+    sheet.addEventListener('touchstart', function(e){
+      if(sheet.scrollTop <= 5){sy = e.touches[0].clientY; dragging=true;}
+    },{passive:true});
+    sheet.addEventListener('touchmove', function(e){
+      if(!dragging) return;
+      sdy = e.touches[0].clientY - sy;
+      if(sdy > 0) sheet.style.transform = 'translateY('+sdy+'px)';
+    },{passive:true});
+    sheet.addEventListener('touchend', function(){
+      if(!dragging) return;
+      dragging = false;
+      if(sdy > 100) closeSheet();
+      sheet.style.transform = '';
+      sdy = 0;
+    });
+    /* Data */
+    var data = {
+      camping: {
+        emoji:'🏕️', bg:'linear-gradient(135deg,#1b5e20,#2e7d32)', title:'Camping Finca Papirucho', sub:'Una noche bajo las estrellas en plena naturaleza',
+        badge:'Más elegido',
+        hours:[
+          {label:'Check-in',val:'12:00 PM'},
+          {label:'Check-out',val:'11:00 AM siguiente día'}
+        ],
+        grid:[
+          {icon:'☕',bg:'#e8f5e9',text:'Desayuno incluido'},
+          {icon:'🍽️',bg:'#e8f5e9',text:'Almuerzo criollo'},
+          {icon:'🍲',bg:'#e8f5e9',text:'Cena completa'},
+          {icon:'🏊',bg:'#e3f2fd',text:'Acceso al río'},
+          {icon:'🔒',bg:'#f3e5f5',text:'Seguridad 24h'},
+          {icon:'🚻',bg:'#fff3e0',text:'Baños limpios'}
+        ],
+        menu:{title:'Menú del día',items:[
+          {name:'Desayuno',val:'Huevos, plátano, queso, café'},
+          {name:'Almuerzo',val:'Pollo guisado, arroz, ensalada, yuca'},
+          {name:'Cena',val:'Sopa de pollo, sandwiches'}
+        ]},
+        conditions:'Reservar con 24 horas de anticipación. Niños menores de 5 años no pagan. No se permiten mascotas en el área del río. El servicio incluye camping básico (carpa del cliente).',
+        wa:'https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20camping.'
+      },
+      excursion: {
+        emoji:'🚣', bg:'linear-gradient(135deg,#1565c0,#1976d2)', title:'Excursión Río Sonador', sub:'Explora el corazón del río con guía local',
+        badge:'Aventura',
+        hours:[
+          {label:'Salida',val:'9:00 AM / 1:30 PM'},
+          {label:'Duración',val:'3 km ida y vuelta'}
+        ],
+        grid:[
+          {icon:'🧭',bg:'#e3f2fd',text:'Guía local certificado'},
+          {icon:'🦺',bg:'#e3f2fd',text:'Chaleco salvavidas'},
+          {icon:'⛑️',bg:'#fce4ec',text:'Casco de seguridad'},
+          {icon:'🍽️',bg:'#e8f5e9',text:'Almuerzo incluido'},
+          {icon:'🩹',bg:'#fff3e0',text:'Botiquín'},
+          {icon:'🏊',bg:'#e3f2fd',text:'Charcos naturales'}
+        ],
+        menu:{title:'Almuerzo incluido',items:[
+          {name:'Principal',val:'Pollo o carne guisada'},
+          {name:'Acompañamiento',val:'Arroz, ensalada, plátano'},
+          {name:'Bebida',val:'Agua o jugo natural'}
+        ]},
+        conditions:'No apto para niños menores de 6 años. Peso máximo por persona: 120 kg. Se recomienda usar calzado cerrado y ropa que se pueda mojar.',
+        wa:'https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20la%20excursi%C3%B3n.'
+      },
+      fourwheel: {
+        emoji:'🚙', bg:'linear-gradient(135deg,#e65100,#ef6c00)', title:'Fourwheel Tours', sub:'Aventura a 4 gomas por el cauce del río',
+        badge:'3 horarios',
+        hours:[
+          {label:'Horarios',val:'9:30am · 1:30pm · 2:30pm'},
+          {label:'Duración',val:'2 a 3 horas'}
+        ],
+        grid:[
+          {icon:'🧭',bg:'#fff3e0',text:'Guía: @donsamueladventure'},
+          {icon:'🌊',bg:'#e3f2fd',text:'3 paradas en el río'},
+          {icon:'⏱️',bg:'#fce4ec',text:'2-3 horas totales'},
+          {icon:'📸',bg:'#f3e5f5',text:'Fotos incluidas'}
+        ],
+        menu:{title:'Incluido',items:[
+          {name:'Vehículo',val:'Cuatrimoto completa'},
+          {name:'Equipo',val:'Casco y chaleco'},
+          {name:'Bebida',val:'Agua durante el recorrido'}
+        ]},
+        conditions:'Edad mínima: 12 años (menores con adulto responsable). Peso máximo: 120 kg por persona. Llevar ropa que se pueda mojar y calzado cerrado. Los tours pueden cancelarse por lluvia intensa.',
+        wa:'https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20fourwheel.'
+      },
+      balneario: {
+        emoji:'🏊', bg:'linear-gradient(135deg,#00695c,#00897b)', title:'Áreas Recreativas', sub:'Balneario y espacios de diversión frente al río',
+        badge:'Relax total',
+        hours:[
+          {label:'Horario',val:'12:00 PM - 5:00 PM'},
+          {label:'Capacidad',val:'Máx. 10 personas'}
+        ],
+        grid:[
+          {icon:'🌊',bg:'#e3f2fd',text:'Frente al río'},
+          {icon:'🔥',bg:'#fff3e0',text:'Fogón disponible'},
+          {icon:'🍳',bg:'#fce4ec',text:'Cocina para usar'},
+          {icon:'🔒',bg:'#e8f5e9',text:'Seguridad'},
+          {icon:'🚻',bg:'#f3e5f5',text:'Baños'},
+          {icon:'🅿️',bg:'#e0f2f1',text:'Estacionamiento'}
+        ],
+        menu:{title:'No incluye comidas',items:[
+          {name:'Disponible',val:'Puedes llevar tu propio picnic'},
+          {name:'Fogón',val:'Leña disponible por RD$200'},
+          {name:'Mesa',val:'Mesas y bancas incluidas'}
+        ]},
+        conditions:'Espacio para máximo 10 personas. No incluye comidas. Hora de apertura: 12:00 PM. Reservar para grupos de más de 6 personas. No se permite música a alto volumen después de las 4 PM.',
+        wa:'https://wa.me/18092209528?text=Hola%20Finca%20Papirucho%2C%20quiero%20reservar%20un%20espacio%20en%20el%20balneario.'
+      }
+    };
+    function populateSheet(svc){
+      var d = data[svc];
+      if(!d) return;
+      document.getElementById('bs-hero').style.background = d.bg;
+      document.getElementById('bs-hero-emoji').textContent = d.emoji;
+      document.getElementById('bs-hero-badge').innerHTML = '<span class="badge">'+d.badge+'</span>';
+      document.getElementById('bs-title').textContent = d.title;
+      document.getElementById('bs-subtitle').textContent = d.sub;
+      /* Hours */
+      var hHtml = '';
+      d.hours.forEach(function(h){
+        hHtml += '<div class="bs-hour-item"><div class="bs-hour-label">'+h.label+'</div><div class="bs-hour-val">'+h.val+'</div></div>';
+      });
+      document.getElementById('bs-hours').innerHTML = hHtml;
+      /* Grid */
+      var gHtml = '';
+      d.grid.forEach(function(g){
+        gHtml += '<div class="bs-grid-item"><div class="bs-gi-icon" style="background:'+g.bg+'">'+g.icon+'</div><span>'+g.text+'</span></div>';
+      });
+      document.getElementById('bs-grid').innerHTML = gHtml;
+      /* Menu */
+      var mHtml = '<div class="bs-menu-title">'+d.menu.title+'</div><div class="bs-menu-list">';
+      d.menu.items.forEach(function(m){
+        mHtml += '<div class="bs-menu-item"><span>'+m.name+'</span><span>'+m.val+'</span></div>';
+      });
+      mHtml += '</div>';
+      document.getElementById('bs-menu').innerHTML = mHtml;
+      /* Conditions */
+      document.getElementById('bs-conditions').innerHTML = '<div class="bs-conditions-title">⚠ Condiciones</div><p style="font-size:.82rem;color:var(--ink);line-height:1.55">'+d.conditions+'</p>';
+      /* WA link */
+      document.getElementById('bs-wa').href = d.wa;
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>

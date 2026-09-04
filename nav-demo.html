@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo — Navegación Móvil Finca Papirucho</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #1f2f1a;
+  --forest-2: #2c4322;
+  --sand: #f6f0e2;
+  --cream: #fdfbf4;
+  --gold: #e8a93c;
+  --gold-2: #f4c465;
+  --leaf: #5b8a3c;
+  --ink: #231d12;
+  --muted: #6d6554;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--sand);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ===== TOP SWITCHER ===== */
+.switcher{position:sticky;top:0;z-index:100;background:var(--forest);padding:14px 16px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.switcher h2{color:#fff;font-family:'Fraunces',serif;font-size:1.1rem;text-align:center;margin-bottom:10px}
+.sw-pills{display:flex;gap:6px;background:rgba(255,255,255,.1);border-radius:14px;padding:4px}
+.sw-pill{flex:1;border:none;background:transparent;color:rgba(255,255,255,.55);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.3px;padding:10px 6px;border-radius:11px;cursor:pointer;transition:all .2s ease;-webkit-tap-highlight-color:transparent}
+.sw-pill.active{background:#fff;color:var(--forest);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sw-pill:hover:not(.active){color:#fff;background:rgba(255,255,255,.08)}
+.sw-label{text-align:center;color:var(--gold-2);font-weight:700;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px}
+
+/* ===== DEMO PANELS ===== */
+.demo{display:none;min-height:100vh;padding-bottom:40px}
+.demo.active{display:block}
+
+/* common card styles */
+.svc-card{background:var(--cream);border:1px solid rgba(31,47,26,.09);border-radius:20px;overflow:hidden;box-shadow:0 12px 30px rgba(31,47,26,.07)}
+.svc-header{padding:22px 20px;display:flex;align-items:center;gap:14px}
+.svc-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:1.3rem;flex:none}
+.svc-icon.camping{background:linear-gradient(135deg,var(--forest),var(--forest-2))}
+.svc-icon.excursion{background:linear-gradient(135deg,#3a7bd5,#2563a8)}
+.svc-icon.fourwheel{background:linear-gradient(135deg,#d97706,#b45309)}
+.svc-icon.areas{background:linear-gradient(135deg,#0891b2,#0e7490)}
+.svc-title{font-family:'Fraunces',serif;font-weight:800;font-size:1.1rem;color:var(--forest);line-height:1.15}
+.svc-sub{color:var(--muted);font-size:.82rem;margin-top:2px}
+.svc-body{padding:0 20px 22px}
+.svc-price{display:inline-flex;align-items:baseline;gap:6px;background:var(--sand);border-left:4px solid var(--gold);padding:10px 16px;border-radius:12px;margin-bottom:14px;font-family:'Fraunces',serif;font-weight:900;font-size:1.15rem;color:var(--forest)}
+.svc-price small{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.svc-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.svc-list li{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--forest);font-weight:500}
+.svc-list li::before{content:"✓";color:var(--leaf);font-weight:800;flex:none;margin-top:1px}
+.svc-wa{display:inline-flex;align-items:center;gap:9px;width:100%;justify-content:center;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;text-decoration:none;font-weight:800;font-size:.88rem;padding:14px 20px;border-radius:14px;transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 8px 20px rgba(37,211,102,.28)}
+.svc-wa:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(37,211,102,.36)}
+.svc-wa svg{width:18px;height:18px}
+
+.demo-title{font-family:'Fraunces',serif;font-weight:800;font-size:1.4rem;text-align:center;padding:24px 20px 4px;color:var(--forest)}
+.demo-desc{text-align:center;color:var(--muted);font-size:.88rem;padding:0 24px 18px;line-height:1.5}
+.demo-tag{text-align:center;color:var(--leaf);font-weight:800;font-size:.65rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px}
+
+/* ===========================
+   OPCIÓN A — PILL CAROUSEL
+   =========================== */
+.a-tabbar{position:relative;display:flex;gap:6px;overflow-x:auto;padding:6px 16px 10px;margin:0 16px 16px;background:rgba(31,47,26,.06);border-radius:16px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.a-tabbar::-webkit-scrollbar{display:none}
+.a-pill{flex:0 0 auto;scroll-snap-align:center;white-space:nowrap;border:none;cursor:pointer;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.82rem;padding:10px 20px;border-radius:12px;transition:all .2s ease;-webkit-tap-highlight-color:transparent;position:relative}
+.a-pill.active{background:var(--forest);color:#fff;box-shadow:0 6px 16px rgba(31,47,26,.25)}
+.a-indicator{position:absolute;bottom:6px;height:3px;background:var(--gold);border-radius:3px;transition:left .35s cubic-bezier(.22,.9,.3,1),width .35s cubic-bezier(.22,.9,.3,1);pointer-events:none}
+.a-panels{padding:0 16px}
+.a-panel{display:none}
+.a-panel.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ===========================
+   OPCIÓN B — BOTTOM SHEET
+   =========================== */
+.b-trigger{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:10px;background:var(--forest);color:#fff;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.88rem;padding:14px 24px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.3);cursor:pointer;transition:transform .2s ease;-webkit-tap-highlight-color:transparent}
+.b-trigger:hover{transform:translateX(-50%) translateY(-2px)}
+.b-trigger svg{width:20px;height:20px}
+.b-overlay{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
+.b-overlay.open{opacity:1;visibility:visible}
+.b-sheet{position:fixed;bottom:0;left:0;right:0;z-index:80;background:var(--cream);border-radius:24px 24px 0 0;padding:12px 20px 34px;transform:translateY(100%);transition:transform .4s cubic-bezier(.22,.9,.3,1);max-height:80vh;overflow-y:auto}
+.b-sheet.open{transform:translateY(0)}
+.b-sheet-handle{width:40px;height:4px;background:rgba(0,0,0,.15);border-radius:4px;margin:0 auto 16px}
+.b-sheet-title{font-family:'Fraunces',serif;font-weight:800;font-size:1.15rem;text-align:center;margin-bottom:18px;color:var(--forest)}
+.b-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.b-sheet-item{background:var(--sand);border:1px solid rgba(31,47,26,.08);border-radius:16px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s ease;-webkit-tap-highlight-color:transparent}
+.b-sheet-item:active{transform:scale(.96);background:var(--forest);color:#fff}
+.b-sheet-item:active .b-sheet-ico{background:rgba(255,255,255,.2)}
+.b-sheet-item:active .b-sheet-name{color:#fff}
+.b-sheet-item:active .b-sheet-price{color:var(--gold-2)}
+.b-sheet-ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin:0 auto 10px;color:#fff;font-size:1.5rem;transition:background .2s ease}
+.b-sheet-name{font-weight:700;font-size:.88rem;color:var(--forest);margin-bottom:4px}
+.b-sheet-price{font-size:.72rem;color:var(--muted);font-weight:600}
+.b-content{padding:0 16px}
+.b-panel{display:none}
+.b-panel.active{display:block;animation:fadeUp .35s ease}
+
+/* ===========================
+   OPCIÓN C — ACCORDION
+   =========================== */
+.c-wrap{padding:0 16px;display:flex;flex-direction:column;gap:10px}
+.c-item{background:var(--cream);border:1px solid rgba(31,47,26,.09);border-radius:18px;overflow:hidden;transition:box-shadow .25s ease,border-color .25s ease}
+.c-item[open]{box-shadow:0 10px 28px rgba(31,47,26,.1);border-color:rgba(91,138,60,.3)}
+.c-head{list-style:none;display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;user-select:none;transition:background .2s ease}
+.c-head:hover{background:rgba(31,47,26,.02)}
+.c-head::-webkit-details-marker{display:none}
+.c-head .c-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:1.15rem;flex:none}
+.c-head-info{flex:1;min-width:0}
+.c-head-name{font-weight:700;font-size:.92rem;color:var(--forest)}
+.c-head-price{font-size:.78rem;color:var(--muted);font-weight:600;margin-top:2px}
+.c-head-arrow{flex:none;width:26px;height:26px;border-radius:50%;background:var(--sand);display:grid;place-items:center;color:var(--forest);transition:transform .3s ease,background .3s ease}
+.c-item[open] .c-head-arrow{background:var(--gold);color:#fff;transform:rotate(180deg)}
+.c-body{padding:0 18px 20px 72px}
+.c-item summary + .c-body{margin-top:-4px}
+
+/* ===========================
+   OPCIÓN D — SWIPE + DOTS
+   =========================== */
+.d-wrap{padding:0 16px}
+.d-viewport{overflow:hidden;border-radius:20px;position:relative}
+.d-track{display:flex;transition:transform .45s cubic-bezier(.22,.9,.3,1);touch-action:pan-y}
+.d-slide{flex:0 0 100%;min-width:100%}
+.d-dots{display:flex;justify-content:center;gap:8px;padding:16px 0 4px}
+.d-dot{width:8px;height:8px;border-radius:50%;background:rgba(31,47,26,.2);border:none;padding:0;cursor:pointer;transition:all .3s ease}
+.d-dot.active{background:var(--gold);transform:scale(1.4)}
+.d-hint{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:.72rem;font-weight:600;padding:10px 0 0}
+.d-hint svg{animation:hintSwipe 2s ease-in-out infinite}
+@keyframes hintSwipe{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+.d-counter{text-align:center;color:var(--muted);font-size:.72rem;font-weight:700;padding:6px 0 0;letter-spacing:1px}
+.d-nav{display:flex;justify-content:space-between;padding:0 4px;margin-top:10px}
+.d-nav-btn{width:40px;height:40px;border-radius:50%;border:1px solid rgba(31,47,26,.12);background:var(--cream);color:var(--forest);display:grid;place-items:center;cursor:pointer;transition:all .2s ease;font-size:1.1rem}
+.d-nav-btn:active{transform:scale(.92);background:var(--forest);color:#fff;border-color:var(--forest)}
+.d-cta-wrap{padding:16px 0 0;text-align:center}
+
+/* shared hidden for demo */
+.hidden{display:none!important}
+
+@media(min-width:760px){
+  .demo{max-width:600px;margin:0 auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SWITCHER ===== -->
+<div class="switcher">
+  <h2>Navegación Móvil — Demo</h2>
+  <div class="sw-pills">
+    <button class="sw-pill active" data-demo="a">A. Pill</button>
+    <button class="sw-pill" data-demo="b">B. Sheet</button>
+    <button class="sw-pill" data-demo="c">C. Accordion</button>
+    <button class="sw-pill" data-demo="d">D. Swipe</button>
+  </div>
+  <div class="sw-label" id="sw-label">Pill Carousel + Indicator</div>
+</div>
+
+<!-- =========================================================
+     OPCIÓN A — PILL CAROUSEL CON SCROLL-SNAP + INDICATOR
+     ========================================================= -->
+<section class="demo active" id="demo-a">
+  <p class="demo-title">Opción A — Pill Carousel</p>
+  <p class="demo-desc">Scroll horizontal con snap. El indicator dorado se anima debajo del tab activo. Los pills se centran al tocar.</p>
+
+  <div style="position:relative;margin:0 16px 16px">
+    <div class="a-tabbar" id="a-tabbar">
+      <button class="a-pill active" data-panel="a-camping">Camping</button>
+      <button class="a-pill" data-panel="a-excursion">Excursión</button>
+      <button class="a-pill" data-panel="a-fourwheel">Fourwheel</button>
+      <button class="a-pill" data-panel="a-areas">Áreas</button>
+      <div class="a-indicator" id="a-indicator"></div>
+    </div>
+  </div>
+
+  <div class="a-panels">
+    <div class="a-panel active" id="a-camping">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon camping">🏕️</div>
+          <div><div class="svc-title">Camping</div><div class="svc-sub">Una noche bajo las estrellas</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>Derecho a área de camping</li>
+            <li>Desayuno, almuerzo y cena</li>
+            <li>Acceso a áreas recreativas</li>
+            <li>Uso del río y balneario</li>
+            <li>Seguridad y baños</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar camping</a>
+        </div>
+      </div>
+    </div>
+    <div class="a-panel" id="a-excursion">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon excursion">🚣</div>
+          <div><div class="svc-title">Excursión Río Sonador</div><div class="svc-sub">Explora el corazón del río</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$1,200 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>Guía local certificado</li>
+            <li>Chaleco salvavidas y casco</li>
+            <li>Recorrido a charcos</li>
+            <li>Almuerzo criollo incluido</li>
+            <li>Botiquín de primeros auxilios</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar excursión</a>
+        </div>
+      </div>
+    </div>
+    <div class="a-panel" id="a-fourwheel">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon fourwheel">🚙</div>
+          <div><div class="svc-title">Fourwheel Tours</div><div class="svc-sub">Aventura a 4 gomas</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>2 a 3 horas de aventura</li>
+            <li>3 paradas dentro del río</li>
+            <li>Guía con @donsamueladventure</li>
+            <li>Tours: 9:30am, 1:30pm, 2:30pm</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar fourwheel</a>
+        </div>
+      </div>
+    </div>
+    <div class="a-panel" id="a-areas">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon areas">🏊</div>
+          <div><div class="svc-title">Áreas Recreativas</div><div class="svc-sub">Balneario y espacios de diversión</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por día</small></div>
+          <ul class="svc-list">
+            <li>Espacio amplio frente al río</li>
+            <li>Área de fogón o cocina</li>
+            <li>Baños disponibles</li>
+            <li>Personal de seguridad</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar espacio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     OPCIÓN B — BOTTOM SHEET CON ICONOS
+     ========================================================= -->
+<section class="demo" id="demo-b">
+  <p class="demo-title">Opción B — Bottom Sheet</p>
+  <p class="demo-desc">Botón fijo "Servicios" que abre un sheet con los 4 servicios. Toca uno para ver su contenido.</p>
+
+  <div class="b-content">
+    <div class="b-panel active" id="b-camping">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon camping">🏕️</div>
+          <div><div class="svc-title">Camping</div><div class="svc-sub">Una noche bajo las estrellas</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>Derecho a área de camping</li>
+            <li>Desayuno, almuerzo y cena</li>
+            <li>Acceso a áreas recreativas</li>
+            <li>Uso del río y balneario</li>
+            <li>Seguridad y baños</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar camping</a>
+        </div>
+      </div>
+    </div>
+    <div class="b-panel" id="b-excursion">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon excursion">🚣</div>
+          <div><div class="svc-title">Excursión Río Sonador</div><div class="svc-sub">Explora el corazón del río</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$1,200 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>Guía local certificado</li>
+            <li>Chaleco salvavidas y casco</li>
+            <li>Recorrido a charcos</li>
+            <li>Almuerzo criollo incluido</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar excursión</a>
+        </div>
+      </div>
+    </div>
+    <div class="b-panel" id="b-fourwheel">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon fourwheel">🚙</div>
+          <div><div class="svc-title">Fourwheel Tours</div><div class="svc-sub">Aventura a 4 gomas</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por persona</small></div>
+          <ul class="svc-list">
+            <li>2 a 3 horas de aventura</li>
+            <li>3 paradas dentro del río</li>
+            <li>Guía con @donsamueladventure</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar fourwheel</a>
+        </div>
+      </div>
+    </div>
+    <div class="b-panel" id="b-areas">
+      <div class="svc-card">
+        <div class="svc-header">
+          <div class="svc-icon areas">🏊</div>
+          <div><div class="svc-title">Áreas Recreativas</div><div class="svc-sub">Balneario y espacios de diversión</div></div>
+        </div>
+        <div class="svc-body">
+          <div class="svc-price">RD$3,000 <small>por día</small></div>
+          <ul class="svc-list">
+            <li>Espacio amplio frente al río</li>
+            <li>Área de fogón o cocina</li>
+            <li>Baños disponibles</li>
+          </ul>
+          <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar espacio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="b-trigger" id="b-trigger">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    Servicios
+  </button>
+  <div class="b-overlay" id="b-overlay"></div>
+  <div class="b-sheet" id="b-sheet">
+    <div class="b-sheet-handle"></div>
+    <div class="b-sheet-title">¿Qué te interesa?</div>
+    <div class="b-sheet-grid">
+      <div class="b-sheet-item" data-bpanel="b-camping">
+        <div class="b-sheet-ico" style="background:linear-gradient(135deg,var(--forest),var(--forest-2))">🏕️</div>
+        <div class="b-sheet-name">Camping</div>
+        <div class="b-sheet-price">Desde RD$700</div>
+      </div>
+      <div class="b-sheet-item" data-bpanel="b-excursion">
+        <div class="b-sheet-ico" style="background:linear-gradient(135deg,#3a7bd5,#2563a8)">🚣</div>
+        <div class="b-sheet-name">Excursión</div>
+        <div class="b-sheet-price">RD$1,200</div>
+      </div>
+      <div class="b-sheet-item" data-bpanel="b-fourwheel">
+        <div class="b-sheet-ico" style="background:linear-gradient(135deg,#d97706,#b45309)">🚙</div>
+        <div class="b-sheet-name">Fourwheel</div>
+        <div class="b-sheet-price">Desde RD$3,000</div>
+      </div>
+      <div class="b-sheet-item" data-bpanel="b-areas">
+        <div class="b-sheet-ico" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🏊</div>
+        <div class="b-sheet-name">Áreas</div>
+        <div class="b-sheet-price">RD$3,000 / día</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     OPCIÓN C — ACCORDION APILADO
+     ========================================================= -->
+<section class="demo" id="demo-c">
+  <p class="demo-title">Opción C — Accordion</p>
+  <p class="demo-desc">Cada servicio es un acordeón colapsado. El precio se ve de entrada. Al tocar, se expande con el contenido completo.</p>
+
+  <div class="c-wrap">
+    <details class="c-item" name="svc-c">
+      <summary class="c-head">
+        <div class="c-ico" style="background:linear-gradient(135deg,var(--forest),var(--forest-2))">🏕️</div>
+        <div class="c-head-info">
+          <div class="c-head-name">Camping</div>
+          <div class="c-head-price">Desde RD$700 · Grupal · Glamping</div>
+        </div>
+        <div class="c-head-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+      </summary>
+      <div class="c-body">
+        <div class="svc-card">
+          <div class="svc-body">
+            <div class="svc-price">RD$3,000 <small>por persona</small></div>
+            <ul class="svc-list">
+              <li>Derecho a área de camping</li>
+              <li>Desayuno, almuerzo y cena</li>
+              <li>Acceso a áreas recreativas</li>
+              <li>Uso del río y balneario</li>
+              <li>Seguridad y baños</li>
+            </ul>
+            <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar camping</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="c-item" name="svc-c">
+      <summary class="c-head">
+        <div class="c-ico" style="background:linear-gradient(135deg,#3a7bd5,#2563a8)">🚣</div>
+        <div class="c-head-info">
+          <div class="c-head-name">Excursión Río Sonador</div>
+          <div class="c-head-price">RD$1,200 · 3 km ida y vuelta</div>
+        </div>
+        <div class="c-head-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+      </summary>
+      <div class="c-body">
+        <div class="svc-card">
+          <div class="svc-body">
+            <div class="svc-price">RD$1,200 <small>por persona</small></div>
+            <ul class="svc-list">
+              <li>Guía local certificado</li>
+              <li>Chaleco salvavidas y casco</li>
+              <li>Recorrido a charcos</li>
+              <li>Almuerzo criollo incluido</li>
+            </ul>
+            <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar excursión</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="c-item" name="svc-c">
+      <summary class="c-head">
+        <div class="c-ico" style="background:linear-gradient(135deg,#d97706,#b45309)">🚙</div>
+        <div class="c-head-info">
+          <div class="c-head-name">Fourwheel Tours</div>
+          <div class="c-head-price">RD$3,000 · 2-3 horas</div>
+        </div>
+        <div class="c-head-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+      </summary>
+      <div class="c-body">
+        <div class="svc-card">
+          <div class="svc-body">
+            <div class="svc-price">RD$3,000 <small>por persona</small></div>
+            <ul class="svc-list">
+              <li>2 a 3 horas de aventura</li>
+              <li>3 paradas dentro del río</li>
+              <li>Guía con @donsamueladventure</li>
+              <li>Tours: 9:30am, 1:30pm, 2:30pm</li>
+            </ul>
+            <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar fourwheel</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="c-item" name="svc-c">
+      <summary class="c-head">
+        <div class="c-ico" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🏊</div>
+        <div class="c-head-info">
+          <div class="c-head-name">Áreas Recreativas</div>
+          <div class="c-head-price">RD$3,000 · Balneario</div>
+        </div>
+        <div class="c-head-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+      </summary>
+      <div class="c-body">
+        <div class="svc-card">
+          <div class="svc-body">
+            <div class="svc-price">RD$3,000 <small>por día</small></div>
+            <ul class="svc-list">
+              <li>Espacio amplio frente al río</li>
+              <li>Área de fogón o cocina</li>
+              <li>Baños disponibles</li>
+              <li>Personal de seguridad</li>
+            </ul>
+            <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar espacio</a>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- =========================================================
+     OPCIÓN D — SWIPE HORIZONTAL + DOTS
+     ========================================================= -->
+<section class="demo" id="demo-d">
+  <p class="demo-title">Opción D — Swipe + Dots</p>
+  <p class="demo-desc">Cada servicio es un slide. Swipe izquierda/derecha para navegar. Flechas y dots para navegación alternativa.</p>
+
+  <div class="d-wrap">
+    <div class="d-viewport" id="d-viewport">
+      <div class="d-track" id="d-track">
+        <!-- Slide 1: Camping -->
+        <div class="d-slide">
+          <div class="svc-card">
+            <div class="svc-header">
+              <div class="svc-icon camping">🏕️</div>
+              <div><div class="svc-title">Camping</div><div class="svc-sub">Una noche bajo las estrellas</div></div>
+            </div>
+            <div class="svc-body">
+              <div class="svc-price">RD$3,000 <small>por persona</small></div>
+              <ul class="svc-list">
+                <li>Derecho a área de camping</li>
+                <li>Desayuno, almuerzo y cena</li>
+                <li>Acceso a áreas recreativas</li>
+                <li>Uso del río y balneario</li>
+                <li>Seguridad y baños</li>
+              </ul>
+              <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar camping</a>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2: Excursión -->
+        <div class="d-slide">
+          <div class="svc-card">
+            <div class="svc-header">
+              <div class="svc-icon excursion">🚣</div>
+              <div><div class="svc-title">Excursión Río Sonador</div><div class="svc-sub">Explora el corazón del río</div></div>
+            </div>
+            <div class="svc-body">
+              <div class="svc-price">RD$1,200 <small>por persona</small></div>
+              <ul class="svc-list">
+                <li>Guía local certificado</li>
+                <li>Chaleco salvavidas y casco</li>
+                <li>Recorrido a charcos</li>
+                <li>Almuerzo criollo incluido</li>
+              </ul>
+              <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar excursión</a>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 3: Fourwheel -->
+        <div class="d-slide">
+          <div class="svc-card">
+            <div class="svc-header">
+              <div class="svc-icon fourwheel">🚙</div>
+              <div><div class="svc-title">Fourwheel Tours</div><div class="svc-sub">Aventura a 4 gomas</div></div>
+            </div>
+            <div class="svc-body">
+              <div class="svc-price">RD$3,000 <small>por persona</small></div>
+              <ul class="svc-list">
+                <li>2 a 3 horas de aventura</li>
+                <li>3 paradas dentro del río</li>
+                <li>Guía con @donsamueladventure</li>
+              </ul>
+              <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar fourwheel</a>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 4: Áreas -->
+        <div class="d-slide">
+          <div class="svc-card">
+            <div class="svc-header">
+              <div class="svc-icon areas">🏊</div>
+              <div><div class="svc-title">Áreas Recreativas</div><div class="svc-sub">Balneario y diversión</div></div>
+            </div>
+            <div class="svc-body">
+              <div class="svc-price">RD$3,000 <small>por día</small></div>
+              <ul class="svc-list">
+                <li>Espacio amplio frente al río</li>
+                <li>Área de fogón o cocina</li>
+                <li>Baños disponibles</li>
+              </ul>
+              <a class="svc-wa" href="#"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>Reservar espacio</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-dots" id="d-dots">
+      <button class="d-dot active" data-i="0"></button>
+      <button class="d-dot" data-i="1"></button>
+      <button class="d-dot" data-i="2"></button>
+      <button class="d-dot" data-i="3"></button>
+    </div>
+    <div class="d-counter" id="d-counter">1 / 4</div>
+    <div class="d-hint">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      Desliza para ver más servicios
+    </div>
+    <div class="d-nav">
+      <button class="d-nav-btn" id="d-prev">‹</button>
+      <button class="d-nav-btn" id="d-next">›</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  /* ===== SWITCHER ===== */
+  var pills = document.querySelectorAll('.sw-pill');
+  var demos = document.querySelectorAll('.demo');
+  var label = document.getElementById('sw-label');
+  var labels = {'a':'Pill Carousel + Indicator','b':'Bottom Sheet','c':'Accordion','d':'Swipe + Dots'};
+  pills.forEach(function(p){
+    p.addEventListener('click', function(){
+      pills.forEach(function(x){x.classList.remove('active')});
+      p.classList.add('active');
+      var id = p.getAttribute('data-demo');
+      demos.forEach(function(d){d.classList.remove('active')});
+      document.getElementById('demo-'+id).classList.add('active');
+      label.textContent = labels[id];
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  /* ===== OPCIÓN A: Pill Carousel ===== */
+  (function(){
+    var bar = document.getElementById('a-tabbar');
+    var pills = bar.querySelectorAll('.a-pill');
+    var indicator = document.getElementById('a-indicator');
+    var panels = document.querySelectorAll('.a-panel');
+    function moveIndicator(el){
+      var barRect = bar.getBoundingClientRect();
+      var elRect = el.getBoundingClientRect();
+      var left = elRect.left - barRect.left + bar.scrollLeft;
+      indicator.style.left = left + 'px';
+      indicator.style.width = elRect.width + 'px';
+    }
+    function activateA(btn){
+      pills.forEach(function(p){p.classList.remove('active')});
+      btn.classList.add('active');
+      var id = btn.getAttribute('data-panel');
+      panels.forEach(function(p){p.classList.remove('active')});
+      document.getElementById(id).classList.add('active');
+      moveIndicator(btn);
+      btn.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    }
+    pills.forEach(function(p){
+      p.addEventListener('click', function(){activateA(p)});
+    });
+    setTimeout(function(){moveIndicator(bar.querySelector('.active'))},50);
+    window.addEventListener('resize', function(){moveIndicator(bar.querySelector('.active'))});
+  })();
+
+  /* ===== OPCIÓN B: Bottom Sheet ===== */
+  (function(){
+    var trigger = document.getElementById('b-trigger');
+    var overlay = document.getElementById('b-overlay');
+    var sheet = document.getElementById('b-sheet');
+    var items = sheet.querySelectorAll('.b-sheet-item');
+    var panels = document.querySelectorAll('.b-panel');
+    var activeLabel = trigger.querySelector('svg').nextSibling;
+    function openSheet(){overlay.classList.add('open');sheet.classList.add('open')}
+    function closeSheet(){overlay.classList.remove('open');sheet.classList.remove('open')}
+    trigger.addEventListener('click', openSheet);
+    overlay.addEventListener('click', closeSheet);
+    items.forEach(function(it){
+      it.addEventListener('click', function(){
+        var id = it.getAttribute('data-bpanel');
+        panels.forEach(function(p){p.classList.remove('active')});
+        document.getElementById(id).classList.add('active');
+        closeSheet();
+        var name = it.querySelector('.b-sheet-name').textContent;
+        trigger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> ' + name;
+      });
+    });
+  })();
+
+  /* ===== OPCIÓN D: Swipe + Dots ===== */
+  (function(){
+    var viewport = document.getElementById('d-viewport');
+    var track = document.getElementById('d-track');
+    var dots = document.querySelectorAll('#d-dots .d-dot');
+    var counter = document.getElementById('d-counter');
+    var prev = document.getElementById('d-prev');
+    var next = document.getElementById('d-next');
+    var slides = track.querySelectorAll('.d-slide');
+    var total = slides.length;
+    var idx = 0;
+    var sx = 0, sdx = 0, dragging = false;
+    function go(n){
+      idx = (n + total) % total;
+      track.style.transform = 'translateX(-' + idx * 100 + '%)';
+      dots.forEach(function(d,i){d.classList.toggle('active',i===idx)});
+      counter.textContent = (idx+1) + ' / ' + total;
+    }
+    prev.addEventListener('click', function(){go(idx-1)});
+    next.addEventListener('click', function(){go(idx+1)});
+    dots.forEach(function(d){
+      d.addEventListener('click', function(){go(parseInt(d.getAttribute('data-i')))});
+    });
+    /* touch swipe */
+    viewport.addEventListener('pointerdown', function(e){
+      sx = e.clientX; sdx = 0; dragging = true;
+      track.setPointerCapture && track.setPointerCapture(e.pointerId);
+      track.style.transition = 'none';
+    });
+    viewport.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      sdx = e.clientX - sx;
+      track.style.transform = 'translateX(' + (-idx * 100 + sdx / viewport.offsetWidth * 100) + '%)';
+    });
+    function endDrag(){
+      if(!dragging) return;
+      dragging = false;
+      track.style.transition = '';
+      if(Math.abs(sdx) > 40){sdx < 0 ? go(idx+1) : go(idx-1)} else go(idx);
+    }
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    viewport.addEventListener('pointerleave', endDrag);
+    go(0);
+  })();
+})();
+</script>
+</body>
+</html>
