@@ -107,7 +107,18 @@
       overflow: hidden;
       isolation: isolate;
       border-radius: 0 0 34px 34px;
-      background: url("assets/rio-miel-caldas-samana.jpg") center/cover no-repeat #1f2f1a;
+      background: #1f2f1a;
+    }
+
+    /* Placeholder de MUY baja calidad del hero (se ve mientras baja el mp4,
+       y queda como fallback si el video no carga). El video va encima. */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -4;
+      background: url("assets/rio-miel-caldas-samana_low.jpg") center/cover no-repeat #1f2f1a;
+      filter: blur(12px);
+      transform: scale(1.05);
     }
 
     .hero::before {
@@ -3209,7 +3220,8 @@
 
     <!-- ===== HERO ===== -->
     <header class="hero">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
         <source src="assets/background.mp4" type="video/mp4">
       </video>
       <div class="grain"></div>
