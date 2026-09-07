@@ -2449,41 +2449,52 @@
     .bs-list-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: var(--cream);
-      border: 1px solid rgba(31, 47, 26, .08);
+      gap: 14px;
+      background: var(--sand);
+      border: 1.5px solid rgba(63, 107, 34, .28);
       border-radius: 16px;
-      padding: 12px;
+      padding: 13px 14px;
       cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .2s ease, border-color .2s ease;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .bs-list-item:hover {
+      border-color: rgba(63, 107, 34, .55);
     }
 
     .bs-list-item:active {
       transform: scale(.97);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
     }
 
     .bs-list-thumb {
-      width: 58px;
-      height: 58px;
-      border-radius: 12px;
+      width: 66px;
+      height: 66px;
+      border-radius: 14px;
       flex-shrink: 0;
       display: grid;
       place-items: center;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       background-size: cover;
       background-position: center;
       position: relative;
       overflow: hidden;
+      border: 1.5px solid rgba(63, 107, 34, .22);
     }
 
     .bs-list-thumb::after {
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, .15);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .10);
+    }
+
+    .bs-list-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .bs-list-thumb span {
@@ -2498,17 +2509,17 @@
     }
 
     .bs-list-cat {
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: #3f662b;
-      margin-bottom: 1px;
+      color: var(--leaf);
+      margin-bottom: 2px;
     }
 
     .bs-list-name {
-      font-weight: 700;
-      font-size: 1rem;
+      font-weight: 800;
+      font-size: 1.22rem;
       color: var(--forest);
       white-space: nowrap;
       overflow: hidden;
@@ -2516,29 +2527,33 @@
     }
 
     .bs-list-price {
-      font-size: .85rem;
-      color: var(--muted);
-      font-weight: 600;
-      margin-top: 2px;
+      font-size: 1.02rem;
+      color: var(--leaf);
+      font-weight: 700;
+      margin-top: 3px;
     }
 
     .bs-list-arrow {
       flex-shrink: 0;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: var(--sand);
+      background: var(--forest);
       display: grid;
       place-items: center;
-      color: var(--forest);
-      font-size: 1.1rem;
-      font-weight: 700;
-      transition: background .2s ease;
+      color: #fff;
+      font-size: 1.15rem;
+      font-weight: 800;
+      transition: background .2s ease, transform .2s ease;
+    }
+
+    .bs-list-item:hover .bs-list-arrow {
+      background: var(--leaf);
     }
 
     .bs-list-item:active .bs-list-arrow {
-      background: var(--forest);
-      color: #fff;
+      background: var(--leaf);
+      transform: scale(.92);
     }
 
     /* --- Overlay --- */
@@ -2574,6 +2589,9 @@
       max-height: 92vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      /* Keep the sheet's own scroll contained: reaching its edge must not
+         pull the page behind it. */
+      overscroll-behavior: contain;
     }
 
     .bs-sheet.open {
@@ -2659,7 +2677,7 @@
     /* --- Hero carousel inside sheet --- */
     .bs-hero {
       width: 100%;
-      height: 210px;
+      height: 252px;
       /* Match the sheet radius (24px) so no sheet-cream fringe shows at corners */
       border-radius: 24px 24px 0 0;
       overflow: hidden;
@@ -2997,7 +3015,8 @@
 
     /* Note tag */
     .bs-note {
-      display: inline-block;
+      display: block;
+      width: fit-content;
       background: rgba(232, 169, 60, .12);
       color: #6b4c00;
       font-size: .78rem;
@@ -3063,146 +3082,172 @@
       }
     }
 
-    /* ===== Galería lightbox (in-page viewer, keeps users on the site) ===== */
-    .lb-overlay {
+    /* ===== Carousel image viewer (shared by carousels + gallery) ===== */
+    .cv-overlay {
       position: fixed;
       inset: 0;
-      z-index: 1100;
-      background: rgba(8, 12, 7, .92);
+      z-index: 1200;
+      background: rgba(0, 0, 0, .96);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
       opacity: 0;
       visibility: hidden;
-      transition: opacity .28s ease, visibility .28s ease;
+      transition: opacity .25s ease, visibility .25s ease;
     }
-
-    .lb-overlay.open {
+    .cv-overlay.open {
       opacity: 1;
       visibility: visible;
     }
-
-    .lb-frame {
-      position: relative;
-      max-width: min(94vw, 980px);
-      max-height: 92vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      transform: scale(.96);
-      transition: transform .28s cubic-bezier(.22, .9, .3, 1);
-    }
-
-    .lb-overlay.open .lb-frame {
-      transform: scale(1);
-    }
-
-    .lb-img-wrap {
-      position: relative;
-      max-width: 100%;
-      max-height: calc(92vh - 70px);
-    }
-
-    .lb-img-wrap img {
-      display: block;
-      max-width: 100%;
-      max-height: calc(92vh - 70px);
-      border-radius: 14px;
-      background: var(--forest);
-      box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
-    }
-
-    .lb-caption {
-      color: rgba(255, 255, 255, .88);
-      font-size: .88rem;
-      font-weight: 600;
-      letter-spacing: .3px;
-      text-align: center;
-      min-height: 1.2em;
-    }
-
-    .lb-close {
+    .cv-close {
       position: absolute;
-      top: -52px;
-      right: 0;
+      top: 16px;
+      right: 16px;
+      z-index: 1202;
       width: 40px;
       height: 40px;
+      border: none;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .16);
+      background: rgba(255,255,255,.12);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, .35);
-      font-size: 1rem;
-      line-height: 1;
+      font-size: 1.5rem;
       display: grid;
       place-items: center;
       cursor: pointer;
-      transition: background .2s ease, transform .2s ease;
+      transition: background .2s ease;
     }
-
-    .lb-close:hover,
-    .lb-close:focus-visible {
-      background: rgba(255, 255, 255, .3);
+    .cv-close:hover,
+    .cv-close:focus-visible {
+      background: rgba(255,255,255,.28);
     }
-
-    .lb-close:active {
-      transform: scale(.9);
+    .cv-img-wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      cursor: grab;
     }
-
-    .lb-close svg {
-      width: 18px;
-      height: 18px;
+    .cv-img-wrap.grabbing {
+      cursor: grabbing;
     }
-
-    .lb-nav {
-      position: fixed;
+    .cv-img {
+      max-width: 92vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 4px;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform .15s ease-out, opacity .35s ease;
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .cv-img.zoomed {
+      max-width: none;
+      max-height: none;
+      transition: none;
+      cursor: grab;
+    }
+    .cv-img.fading {
+      opacity: 0;
+    }
+    .cv-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.5);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .3px;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .6s ease;
+    }
+    .cv-hint.hidden {
+      opacity: 0;
+    }
+    .cv-counter {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.6);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: .6px;
+      z-index: 1202;
+      pointer-events: none;
+    }
+    .cv-caption {
+      position: absolute;
+      bottom: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 86vw;
+      color: rgba(255,255,255,.85);
+      font-size: .88rem;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: .3px;
+      z-index: 1202;
+      pointer-events: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    }
+    .cv-caption:empty {
+      display: none;
+    }
+    .cv-nav {
+      position: absolute;
       top: 50%;
       transform: translateY(-50%);
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .14);
+      background: rgba(255,255,255,.12);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, .3);
-      font-size: 1.5rem;
-      line-height: 1;
+      border: none;
       display: grid;
       place-items: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      z-index: 1202;
       cursor: pointer;
-      transition: background .2s ease, transform .2s ease;
-      z-index: 1101;
+      transition: background .2s ease, transform .2s ease, opacity .3s ease;
     }
-
-    .lb-nav:hover,
-    .lb-nav:focus-visible {
-      background: rgba(255, 255, 255, .3);
+    .cv-nav:hover,
+    .cv-nav:focus-visible {
+      background: rgba(255,255,255,.28);
     }
-
-    .lb-nav:active {
-      transform: translateY(-50%) scale(.9);
+    .cv-nav:active {
+      transform: translateY(-50%) scale(.92);
     }
-
-    .lb-prev {
+    .cv-nav.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cv-prev {
       left: 14px;
     }
-
-    .lb-next {
+    .cv-next {
       right: 14px;
     }
-
-    .lb-counter {
-      color: rgba(255, 255, 255, .55);
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .6px;
+    .cv-spinner {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border: 4px solid rgba(255,255,255,.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: cv-spin .8s linear infinite;
+      z-index: 1203;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .lb-overlay,
-      .lb-frame {
-        transition: none;
-      }
+    @keyframes cv-spin {
+      to { transform: rotate(360deg); }
+    }
+    .cv-img.loading {
+      opacity: 0;
     }
   </style>
 </head>
@@ -3852,58 +3897,58 @@
         <div class="gal" style="margin-top:16px">
           <a href="assets/new.jpg" target="_blank" rel="noopener"><img decoding="async" src="assets/progressive/new_web.jpg"
               alt="Finca Papirucho Río Sonador" loading="lazy"><span class="cap">Río Sonador</span></a>
-          <a href="https://bio.linkcdn.cc/upload/2023080518/169125888900056016.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/f8e36946.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/f8e36946_web.jpg"
               alt="Áreas recreativas" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2023080518/169125890900087368.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/a0997d47.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/a0997d47_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2023080518/169125893200085367.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/75737980.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/75737980_web.jpg" alt="Río Sonador"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2023080518/169125894800044793.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/6664387e.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/6664387e_web.jpg" alt="Naturaleza"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2023080518/169125897600094107.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/23ff6559.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/23ff6559_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636777400074372.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/727101bf.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/727101bf_web.jpg"
               alt="Camping y glamping" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636778200068550.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/11bbebd0.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/11bbebd0_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636787500054021.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/9b95f661.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/9b95f661_web.jpg" alt="Río Sonador"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636793400014619.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/a1034fac.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/a1034fac_web.jpg" alt="Naturaleza"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636797100021129.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/6430c738.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/6430c738_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636819600084452.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/6449584a.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/6449584a_web.jpg" alt="Zona de camping en Finca Papirucho"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636829400024087.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/3fbaa461.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/3fbaa461_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636879800059843.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/b2dda980.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/b2dda980_web.jpg" alt="Río Sonador"
               loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636881100038275.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/bdf2533d.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/bdf2533d_web.jpg"
               alt="Áreas recreativas" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636881600048304.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/c8127129.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/c8127129_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636882500050392.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/02c3367f.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/02c3367f_web.jpg"
               alt="Camping y glamping" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636883200087421.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/1cddf876.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/1cddf876_web.jpg"
               alt="Finca Papirucho" loading="lazy"></a>
-          <a href="https://bio.linkcdn.cc/upload/2025050414/174636892700054775.jpg" target="_blank" rel="noopener"><img
+          <a href="assets/progressive/18b1cd73.jpg" target="_blank" rel="noopener"><img
               decoding="async" src="assets/progressive/18b1cd73_web.jpg" alt="Río Sonador"
               loading="lazy"></a>
         </div>
@@ -4882,11 +4927,33 @@
       };
 
       /* ---- Open / Close ---- */
+      /* Lock/unlock the document scroll (viewport). Overflow on <body> alone
+         does not stop scrolling when the document scroller is <html>, so both
+         are fixed. Exposed on window so the viewer script (a separate IIFE)
+         can reuse the SAME helpers, and reference-counted so nested locks
+         (viewer over sheet) only release the page when EVERY layer closes. */
+      var scrollLockCount = 0;
+
+      window.lockScroll = function () {
+        scrollLockCount++;
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      };
+
+      window.unlockScroll = function () {
+        if (scrollLockCount <= 0) return;
+        scrollLockCount--;
+        if (scrollLockCount === 0) {
+          document.documentElement.style.overflow = '';
+          document.body.style.overflow = '';
+        }
+      };
+
       window.openSheet = function (svc) {
         var d = svcData[svc];
         if (!d) return;
         console.log('[BS] opening', svc);
-        document.body.style.overflow = 'hidden';
+        lockScroll();
         buildHero(d);
         buildBody(svc, d);
         overlay.setAttribute('aria-hidden', 'false');
@@ -4900,7 +4967,7 @@
       };
 
       function closeSheet() {
-        document.body.style.overflow = '';
+        unlockScroll();
         overlay.classList.remove('open');
         sheet.classList.remove('open');
         overlay.setAttribute('aria-hidden', 'true');
@@ -5117,99 +5184,420 @@
       });
     })();
   </script>
-  <!-- ===== Galería lightbox ===== -->
-  <div class="lb-overlay" id="lb-overlay" aria-hidden="true">
-    <div class="lb-frame" role="dialog" aria-modal="true" aria-label="Visor de imágenes">
-      <button class="lb-close" id="lb-close" aria-label="Cerrar imagen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"
-          aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18" />
-        </svg>
-      </button>
-      <div class="lb-img-wrap"><img id="lb-img" alt=""></div>
-      <div class="lb-caption" id="lb-caption"></div>
-      <div class="lb-counter" id="lb-counter"></div>
+
+  <!-- ===== Carousel image viewer: tap to zoom original, navigate within ===== -->
+  <div class="cv-overlay" id="cv-overlay" aria-hidden="true">
+    <button class="cv-close" id="cv-close" aria-label="Cerrar imagen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+    <div class="cv-img-wrap" id="cv-img-wrap">
+      <div class="cv-spinner" id="cv-spinner" aria-hidden="true"></div>
+      <img class="cv-img" id="cv-img" alt="" draggable="false">
     </div>
-    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Imagen anterior">‹</button>
-    <button class="lb-nav lb-next" id="lb-next" aria-label="Imagen siguiente">›</button>
+    <div class="cv-hint" id="cv-hint">Pellizca para hacer zoom · Doble toque para ampliar</div>
+    <div class="cv-caption" id="cv-caption"></div>
+    <div class="cv-counter" id="cv-counter"></div>
+    <button class="cv-nav cv-prev" id="cv-prev" aria-label="Imagen anterior">‹</button>
+    <button class="cv-nav cv-next" id="cv-next" aria-label="Imagen siguiente">›</button>
   </div>
 
   <script>
     /* ============================================================
-       GALERÍA LIGHTBOX — open gallery photos in-page, no navigation
+       GALERÍA LIGHTBOX — now delegates to the shared carousel viewer
+       (cv-*) which provides spinner, zoom/pan, and in-viewer navigation.
        ============================================================ */
     (function () {
       var links = Array.prototype.slice.call(document.querySelectorAll('.gal a'));
       if (!links.length) return;
 
-      var overlay = document.getElementById('lb-overlay');
-      var imgEl = document.getElementById('lb-img');
-      var captionEl = document.getElementById('lb-caption');
-      var counterEl = document.getElementById('lb-counter');
-      var closeBtn = document.getElementById('lb-close');
-      var prevBtn = document.getElementById('lb-prev');
-      var nextBtn = document.getElementById('lb-next');
-      var idx = 0;
       var lastFocus = null;
-
-      function render() {
-        var link = links[idx];
-        var img = link.querySelector('img');
-        var cap = link.querySelector('.cap');
-        imgEl.src = link.href;
-        imgEl.alt = img ? img.getAttribute('alt') : '';
-        captionEl.textContent = cap ? cap.textContent.trim() : '';
-        counterEl.textContent = (idx + 1) + ' / ' + links.length;
-      }
-
-      function open(i) {
-        idx = (i + links.length) % links.length;
-        lastFocus = document.activeElement;
-        render();
-        overlay.classList.add('open');
-        overlay.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        closeBtn.focus();
-      }
-
-      function close() {
-        overlay.classList.remove('open');
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-        if (lastFocus) lastFocus.focus();
-      }
-
       links.forEach(function (link, i) {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          open(i);
+          if (typeof window.cvOpenViewer !== 'function') return;
+          lastFocus = document.activeElement;
+          var srcs = links.map(function (l) { return l.href; });
+          var caps = links.map(function (l) {
+            var c = l.querySelector('.cap');
+            return c ? c.textContent.trim() : '';
+          });
+          window.cvOpenViewer(srcs, i, caps);
         });
       });
 
-      closeBtn.addEventListener('click', close);
-      prevBtn.addEventListener('click', function () { open(idx - 1); });
-      nextBtn.addEventListener('click', function () { open(idx + 1); });
-
-      overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) close();
+      // Restore anchor focus whenever the shared cv-* viewer is closed via Escape.
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        var ov = document.getElementById('cv-overlay');
+        if (ov && ov.classList.contains('open') && lastFocus) lastFocus.focus();
       });
+    })();
+  </script>
 
+  <script>
+    /* ============================================================
+       CAROUSEL IMAGE VIEWER — tap carousel image → full-screen original with pinch/scroll zoom
+       ============================================================ */
+    (function () {
+      var overlay = document.getElementById('cv-overlay');
+      var img = document.getElementById('cv-img');
+      var wrap = document.getElementById('cv-img-wrap');
+      var closeBtn = document.getElementById('cv-close');
+      var hint = document.getElementById('cv-hint');
+      var spinner = document.getElementById('cv-spinner');
+      var counterEl = document.getElementById('cv-counter');
+      var captionEl = document.getElementById('cv-caption');
+      var prevBtn = document.getElementById('cv-prev');
+      var nextBtn = document.getElementById('cv-next');
+      var hintTimer = null;
+
+      /* ---- Collection + current index ---- */
+      var images = [];
+      var captions = [];
+      var idx = 0;
+      var renderToken = 0;
+
+      /* ---- In-memory image cache (instant back-navigation) ----
+         Key: URL -> HTMLImageElement already loading/loaded. Navigating back
+         to a seen image skips the spinner because the data is already here. */
+      var cache = {};
+
+      function cachedImg(url) {
+        if (!cache[url]) {
+          var im = new Image();
+          im.decoding = 'async';
+          im.src = url;
+          cache[url] = im;
+        }
+        return cache[url];
+      }
+
+      function isReady(url) {
+        var im = cache[url];
+        return !!(im && im.complete && im.naturalWidth > 0);
+      }
+
+      function preloadScope() {
+        // Always preload the immediate neighbours; preload the whole set when
+        // the collection is small (typical gallery), so any step is instant.
+        if (images.length <= 8) {
+          images.forEach(cachedImg);
+          return;
+        }
+        cachedImg(images[(idx + 1) % images.length]);
+        cachedImg(images[(idx - 1 + images.length) % images.length]);
+      }
+
+      /* ---- Zoom / pan state ---- */
+      var scale = 1, tx = 0, ty = 0;
+      var gesturing = false, pinchDist0 = 0, pinchScale0 = 1;
+      var dragging = false, dragX0 = 0, dragY0 = 0, tx0 = 0, ty0 = 0;
+      var lastTap = 0;
+
+      function resetZoom() {
+        scale = 1; tx = 0; ty = 0;
+        applyTransform();
+      }
+
+      function applyTransform() {
+        img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      }
+
+      function clampPan() {
+        if (scale <= 1) { tx = 0; ty = 0; return; }
+        var r = img.getBoundingClientRect();
+        var pw = (window.innerWidth - r.width) / 2;
+        var ph = (window.innerHeight - r.height) / 2;
+        var ox = (r.width - img.naturalWidth) / 2;
+        var oy = (r.height - img.naturalHeight) / 2;
+        tx = Math.max(Math.min(tx, pw - ox), -(pw + ox));
+        ty = Math.max(Math.min(ty, ph - oy), -(ph + oy));
+      }
+
+      function setCounter() {
+        counterEl.textContent = (idx + 1) + ' / ' + images.length;
+      }
+
+      function showSpinner() {
+        spinner.style.display = 'block';
+        img.classList.remove('fading');
+        img.classList.add('loading');
+      }
+
+      function render() {
+        var src = images[idx];
+        if (!src) return;
+        // Token guards against stale async load/error callbacks when the
+        // user navigates quickly or reopens the viewer.
+        var token = ++renderToken;
+        // Skip the spinner when the image is already loaded in our cache.
+        if (!isReady(src)) showSpinner();
+        else {
+          spinner.style.display = 'none';
+          img.classList.remove('loading');
+        }
+        img.onload = function () {
+          if (token !== renderToken) return;
+          // Register the loaded element in the cache so revisiting it is
+          // instant.
+          if (!isReady(img.src)) cache[img.src] = img;
+          spinner.style.display = 'none';
+          img.classList.remove('loading');
+          // Gentle cross-fade in.
+          void img.offsetWidth;
+          img.classList.add('fading');
+          requestAnimationFrame(function () { img.classList.remove('fading'); });
+        };
+        img.onerror = function () {
+          if (token !== renderToken) return;
+          spinner.style.display = 'none';
+          img.classList.remove('loading');
+        };
+        img.src = src;
+        img.alt = 'Imagen ampliada';
+        captionEl.textContent = captions[idx] || '';
+        resetZoom();
+        setCounter();
+        prevBtn.classList.toggle('hidden', images.length <= 1);
+        nextBtn.classList.toggle('hidden', images.length <= 1);
+        preloadScope();
+      }
+
+      function go(n) {
+        if (images.length <= 1) return;
+        idx = (n + images.length) % images.length;
+        render();
+      }
+
+      function openViewer(srcArray, startIndex, capArray) {
+        images = srcArray.slice();
+        captions = capArray ? capArray.slice() : [];
+        idx = ((startIndex || 0) + images.length) % images.length;
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        lockScroll();
+        clearTimeout(hintTimer);
+        hint.classList.remove('hidden');
+        hintTimer = setTimeout(function () { hint.classList.add('hidden'); }, 4000);
+        render();
+      }
+
+      function closeViewer() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+        // Invalidate any pending render callbacks so they can never mutate a
+        // closed overlay.
+        renderToken++;
+        img.onload = null;
+        img.onerror = null;
+        img.src = '';
+        img.classList.remove('loading', 'fading');
+        spinner.style.display = 'none';
+        resetZoom();
+        images = [];
+        captions = [];
+        captionEl.textContent = '';
+        clearTimeout(hintTimer);
+      }
+
+      closeBtn.addEventListener('click', closeViewer);
+      prevBtn.addEventListener('click', function () { go(idx - 1); });
+      nextBtn.addEventListener('click', function () { go(idx + 1); });
+      overlay.addEventListener('click', function (e) {
+        if (mouseDown || dragging) return; // ignore clicks that were drags
+        if (e.target === overlay || e.target === wrap) closeViewer();
+      });
       document.addEventListener('keydown', function (e) {
         if (!overlay.classList.contains('open')) return;
-        if (e.key === 'Escape') close();
-        if (e.key === 'ArrowLeft') open(idx - 1);
-        if (e.key === 'ArrowRight') open(idx + 1);
+        if (e.key === 'Escape') closeViewer();
+        if (e.key === 'ArrowLeft') go(idx - 1);
+        if (e.key === 'ArrowRight') go(idx + 1);
       });
 
-      /* Swipe support on touch */
-      var sx = 0;
-      overlay.addEventListener('touchstart', function (e) {
-        sx = e.changedTouches[0].clientX;
+      /* ---- Wheel zoom (desktop), anchored at the cursor position ---- */
+      function zoomAt(px, py, factor) {
+        var ns = Math.max(1, Math.min(scale * factor, 4));
+        // If zooming out all the way to 1, reset pan entirely.
+        if (ns === 1) { scale = 1; tx = 0; ty = 0; applyTransform(); return; }
+        var rect = img.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        // Point on the image under the focal point (in pre-zoom coords).
+        var ux = (px - cx - tx) / scale;
+        var uy = (py - cy - ty) / scale;
+        scale = ns;
+        // Keep that point anchored under the focal point after zooming.
+        tx = px - cx - ux * scale;
+        ty = py - cy - uy * scale;
+        clampPan();
+        applyTransform();
+      }
+
+      wrap.addEventListener('wheel', function (e) {
+        if (!overlay.classList.contains('open')) return;
+        e.preventDefault();
+        var factor = e.deltaY < 0 ? 1.15 : 0.87;
+        var rect = img.getBoundingClientRect();
+        // Focal point = cursor; if cursor is off the image, fall back to center.
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var px = e.clientX, py = e.clientY;
+        zoomAt(px, py, factor);
+      }, { passive: false });
+
+      /* ---- Mouse drag to pan when zoomed (desktop) ---- */
+      var mouseDown = false, mx0 = 0, my0 = 0, mtx0 = 0, mty0 = 0;
+      wrap.addEventListener('mousedown', function (e) {
+        if (!overlay.classList.contains('open')) return;
+        if (scale > 1 && e.button === 0) {
+          mouseDown = true;
+          mx0 = e.clientX;
+          my0 = e.clientY;
+          mtx0 = tx;
+          mty0 = ty;
+          wrap.classList.add('grabbing');
+          e.preventDefault();
+        }
+      });
+      window.addEventListener('mousemove', function (e) {
+        if (!mouseDown) return;
+        tx = mtx0 + (e.clientX - mx0);
+        ty = mty0 + (e.clientY - my0);
+        clampPan();
+        applyTransform();
+      });
+      window.addEventListener('mouseup', function () {
+        if (!mouseDown) return;
+        mouseDown = false;
+        wrap.classList.remove('grabbing');
+      });
+
+      /* ---- Double-tap zoom (mobile) ---- */
+      wrap.addEventListener('touchend', function (e) {
+        if (overlay.classList.contains('open') && e.changedTouches.length === 1) {
+          var now = Date.now();
+          if (now - lastTap < 300) {
+            e.preventDefault();
+            if (scale > 1) { scale = 1; tx = 0; ty = 0; }
+            else { scale = 2.5; }
+            clampPan();
+            applyTransform();
+            lastTap = 0;
+          } else {
+            lastTap = now;
+          }
+        }
+      });
+
+      /* ---- Pinch-to-zoom (2-finger) + horizontal swipe when not zoomed ---- */
+      var swipeX0 = 0, swipeY0 = 0, swipeActive = false;
+      var pinchFx = 0, pinchFy = 0;
+      wrap.addEventListener('touchstart', function (e) {
+        if (!overlay.classList.contains('open')) return;
+        if (e.touches.length === 2) {
+          gesturing = true;
+          swipeActive = false;
+          var dx = e.touches[0].clientX - e.touches[1].clientX;
+          var dy = e.touches[0].clientY - e.touches[1].clientY;
+          pinchDist0 = Math.sqrt(dx * dx + dy * dy);
+          pinchScale0 = scale;
+          // Focal point = midpoint between the two fingers.
+          pinchFx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          pinchFy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        } else if (e.touches.length === 1) {
+          if (scale > 1) {
+            dragging = true;
+            dragX0 = e.touches[0].clientX;
+            dragY0 = e.touches[0].clientY;
+            tx0 = tx;
+            ty0 = ty;
+            wrap.classList.add('grabbing');
+          } else {
+            // Reset zoom baseline + capture swipe only if horizontal intent.
+            swipeX0 = e.touches[0].clientX;
+            swipeY0 = e.touches[0].clientY;
+            swipeActive = true;
+          }
+        }
       }, { passive: true });
-      overlay.addEventListener('touchend', function (e) {
-        var dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 45) { dx < 0 ? open(idx + 1) : open(idx - 1); }
+
+      wrap.addEventListener('touchmove', function (e) {
+        if (gesturing && e.touches.length === 2) {
+          e.preventDefault();
+          var dx = e.touches[0].clientX - e.touches[1].clientX;
+          var dy = e.touches[0].clientY - e.touches[1].clientY;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          var ratio = d / pinchDist0;
+          var factor = ratio / (scale / Math.max(pinchScale0, 1e-6));
+          if (!isFinite(factor) || factor <= 0) factor = 1;
+          // Update focal point as fingers move, then zoom anchored there.
+          pinchFx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          pinchFy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+          zoomAt(pinchFx, pinchFy, factor);
+        } else if (dragging && e.touches.length === 1) {
+          e.preventDefault();
+          tx = tx0 + (e.touches[0].clientX - dragX0);
+          ty = ty0 + (e.touches[0].clientY - dragY0);
+          clampPan();
+          applyTransform();
+        } else if (swipeActive && e.touches.length === 1 && scale <= 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      wrap.addEventListener('touchend', function (e) {
+        if (scale <= 1 && swipeActive && e.changedTouches.length === 1) {
+          var dx = e.changedTouches[0].clientX - swipeX0;
+          var dy = e.changedTouches[0].clientY - swipeY0;
+          // Horizontal swipe navigates; vertical dismiss handled by tap on wrap.
+          if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+            go(idx + (dx < 0 ? 1 : -1));
+          }
+        }
+        gesturing = false;
+        dragging = false;
+        swipeActive = false;
+        wrap.classList.remove('grabbing');
       }, { passive: true });
+
+      /* ---- Helpers to collect sibling images of a carousel slide ---- */
+      function siblingsOf(clickedImg) {
+        var slide = clickedImg.closest('.slide, .bs-slide');
+        if (!slide || !slide.parentNode) return null;
+        var parent = slide.parentNode;
+        var imgs = Array.prototype.slice.call(parent.querySelectorAll('img'));
+        imgs = imgs.filter(function (i) { return i.src; });
+        var start = imgs.indexOf(clickedImg);
+        return { list: imgs, index: start >= 0 ? start : 0 };
+      }
+
+      /* ---- Attach to carousel images ---- */
+      function attach(el) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var ref = siblingsOf(el);
+          if (ref) openViewer(ref.list.map(function (i) { return i.currentSrc || i.src; }), ref.index);
+          else openViewer([el.currentSrc || el.src], 0);
+        });
+      }
+
+      document.querySelectorAll('.p-hero[data-images] .slide img, .camp-hero .carousel-track .slide img').forEach(attach);
+
+      /* ---- Bottom sheet carousel images (rendered on demand) ---- */
+      var bsObserver = new MutationObserver(function () {
+        document.querySelectorAll('.bs-hero .bs-slide img:not([data-cv])').forEach(function (imgEl) {
+          imgEl.setAttribute('data-cv', '1');
+          attach(imgEl);
+        });
+      });
+      bsObserver.observe(document.body, { childList: true, subtree: true });
+
+      /* ---- Public API for other viewers (e.g. gallery lightbox) ---- */
+      window.cvOpenViewer = openViewer;
     })();
   </script>
   <a class="wa-float"
