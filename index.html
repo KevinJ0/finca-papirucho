@@ -3139,15 +3139,9 @@
       border-radius: 4px;
       user-select: none;
       -webkit-user-drag: none;
-      transition: transform .15s ease-out, opacity .35s ease;
+      transition: opacity .35s ease;
       transform-origin: center center;
       will-change: transform;
-    }
-    .cv-img.zoomed {
-      max-width: none;
-      max-height: none;
-      transition: none;
-      cursor: grab;
     }
     .cv-img.fading {
       opacity: 0;
@@ -5269,6 +5263,7 @@
     })();
   </script>
 
+  <script src="assets/js/panzoom.min.js"></script>
   <script>
     /* ============================================================
        CAROUSEL IMAGE VIEWER — tap carousel image → full-screen original with pinch/scroll zoom
@@ -5324,30 +5319,64 @@
       }
 
       /* ---- Zoom / pan state ---- */
-      var scale = 1, tx = 0, ty = 0;
-      var gesturing = false, pinchDist0 = 0, pinchScale0 = 1;
-      var dragging = false, dragX0 = 0, dragY0 = 0, tx0 = 0, ty0 = 0;
+      // Panzoom (assets/js/panzoom.min.js) owns all zoom/pan math: wheel zoom
+      // anchored at the cursor, pointer drag, and multi-touch pinch with a
+      // focal point. We drive its lifecycle from the viewer.
       var lastTap = 0;
+      var pzGesture = false; // a Panzoom gesture just ran; swallow the next click
 
       function resetZoom() {
-        scale = 1; tx = 0; ty = 0;
-        applyTransform();
+        if (window.pz) {
+          window.pz.reset({ animate: false });
+        } else {
+          img.style.transform = '';
+        }
       }
 
-      function applyTransform() {
-        img.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      function initPanzoom() {
+        if (!window.Panzoom || window.pz) return;
+        var instance = window.Panzoom(img, {
+          startScale: 1,
+          minScale: 1,
+          maxScale: 4,
+          panOnlyWhenZoomed: true,
+          animate: false
+        });
+        window.pz = instance;
+        // A gesture just ran (drag/pinch): swallow the synthetic click so the
+        // overlay doesn't close right after the user finishes dragging.
+        var startState = null;
+        img.addEventListener('panzoomstart', function () {
+          var s0 = instance.getScale();
+          var p0 = instance.getPan();
+          startState = { x: p0.x, y: p0.y, s: s0 };
+        });
+        img.addEventListener('panzoomend', function () {
+          var t = instance.getPan();
+          var s = instance.getScale();
+          var moved = !startState ||
+            Math.abs(t.x - startState.x) > 5 ||
+            Math.abs(t.y - startState.y) > 5 ||
+            Math.abs(s - startState.s) > 0.05;
+          startState = null;
+          pzGesture = moved;
+          var s = instance.getScale();
+          if (s <= 1) {
+            instance.reset({ animate: false });
+            return;
+          }
+          var r = img.getBoundingClientRect();
+          var maxX = Math.max(0, (r.width - window.innerWidth) / 2);
+          var maxY = Math.max(0, (r.height - window.innerHeight) / 2);
+          var nx = Math.max(-maxX, Math.min(maxX, t.x));
+          var ny = Math.max(-maxY, Math.min(maxY, t.y));
+          if (nx !== t.x || ny !== t.y) {
+            instance.setTransform({ x: nx, y: ny, scale: s }, { animate: false });
+          }
+        });
+        return instance;
       }
-
-      function clampPan() {
-        if (scale <= 1) { tx = 0; ty = 0; return; }
-        var r = img.getBoundingClientRect();
-        var pw = (window.innerWidth - r.width) / 2;
-        var ph = (window.innerHeight - r.height) / 2;
-        var ox = (r.width - img.naturalWidth) / 2;
-        var oy = (r.height - img.naturalHeight) / 2;
-        tx = Math.max(Math.min(tx, pw - ox), -(pw + ox));
-        ty = Math.max(Math.min(ty, ph - oy), -(ph + oy));
-      }
+      initPanzoom();
 
       function setCounter() {
         counterEl.textContent = (idx + 1) + ' / ' + images.length;
@@ -5440,7 +5469,7 @@
       prevBtn.addEventListener('click', function () { go(idx - 1); });
       nextBtn.addEventListener('click', function () { go(idx + 1); });
       overlay.addEventListener('click', function (e) {
-        if (mouseDown || dragging) return; // ignore clicks that were drags
+        if (pzGesture) return; // ignore clicks that were Panzoom gestures
         if (e.target === overlay || e.target === wrap) closeViewer();
       });
       document.addEventListener('keydown', function (e) {
@@ -5451,155 +5480,69 @@
       });
 
       /* ---- Wheel zoom (desktop), anchored at the cursor position ---- */
-      // Zoom is anchored to the image's transform-origin. Since the transform is
-      // `translate(tx,ty) scale(s)` with `transform-origin: center center`, the
-      // scale pivot is the layout center of the image, which matches the center of
-      // the wrapping overlay (the image is flex-centered and scales around it).
-      // The layout center never changes on zoom, so we must use the overlay center,
-      // NOT the image's transformed bounding rect (whose center drifts as the image
-      // grows and pans). Using the drifting rect center is what made every zoom
-      // anchor to a fixed leftward point instead of the cursor.
-      function zoomAt(px, py, factor) {
-        var ns = Math.max(1, Math.min(scale * factor, 4));
-        // If zooming out all the way to 1, reset pan entirely.
-        if (ns === 1) { scale = 1; tx = 0; ty = 0; applyTransform(); return; }
-        // Fixed layout-center pivot of the transform-origin.
-        var cx = window.innerWidth / 2;
-        var cy = window.innerHeight / 2;
-        // Point on the image under the focal point (in pre-zoom coords).
-        var ux = (px - cx - tx) / scale;
-        var uy = (py - cy - ty) / scale;
-        scale = ns;
-        // Keep that point anchored under the focal point after zooming.
-        tx = px - cx - ux * scale;
-        ty = py - cy - uy * scale;
-        clampPan();
-        applyTransform();
+      function currentScale() {
+        return window.pz ? window.pz.getScale() : 1;
       }
-
       wrap.addEventListener('wheel', function (e) {
         if (!overlay.classList.contains('open')) return;
-        e.preventDefault();
-        var factor = e.deltaY < 0 ? 1.15 : 0.87;
-        var rect = img.getBoundingClientRect();
-        // Focal point = cursor; if cursor is off the image, fall back to center.
-        var cx = rect.left + rect.width / 2;
-        var cy = rect.top + rect.height / 2;
-        var px = e.clientX, py = e.clientY;
-        zoomAt(px, py, factor);
+        if (!window.pz) return;
+        // Panzoom's zoomWithWheel anchors at the cursor and never animates.
+        window.pz.zoomWithWheel(e);
       }, { passive: false });
 
-      /* ---- Mouse drag to pan when zoomed (desktop) ---- */
-      var mouseDown = false, mx0 = 0, my0 = 0, mtx0 = 0, mty0 = 0;
-      wrap.addEventListener('mousedown', function (e) {
-        if (!overlay.classList.contains('open')) return;
-        if (scale > 1 && e.button === 0) {
-          mouseDown = true;
-          mx0 = e.clientX;
-          my0 = e.clientY;
-          mtx0 = tx;
-          mty0 = ty;
-          wrap.classList.add('grabbing');
-          e.preventDefault();
-        }
-      });
-      window.addEventListener('mousemove', function (e) {
-        if (!mouseDown) return;
-        tx = mtx0 + (e.clientX - mx0);
-        ty = mty0 + (e.clientY - my0);
-        clampPan();
-        applyTransform();
-      });
-      window.addEventListener('mouseup', function () {
-        if (!mouseDown) return;
-        mouseDown = false;
-        wrap.classList.remove('grabbing');
-      });
+      /* ---- Pointer drag to pan when zoomed (desktop + touch) ----
+         Panzoom binds pointer events on the image: drag pans when zoomed and
+         pinch zooms with a focal point, so no manual mouse/touch math here. */
 
-      /* ---- Double-tap zoom (mobile) ---- */
+      /* ---- Double-tap zoom (mobile) via Panzoom focal ---- */
       wrap.addEventListener('touchend', function (e) {
-        if (overlay.classList.contains('open') && e.changedTouches.length === 1) {
-          var now = Date.now();
-          if (now - lastTap < 300) {
-            e.preventDefault();
-            if (scale > 1) { scale = 1; tx = 0; ty = 0; }
-            else { scale = 2.5; }
-            clampPan();
-            applyTransform();
-            lastTap = 0;
+        if (!overlay.classList.contains('open') || e.changedTouches.length !== 1) return;
+        var now = Date.now();
+        if (now - lastTap < 300) {
+          e.preventDefault();
+          if (!window.pz) return;
+          var s = window.pz.getScale();
+          if (s > 1) {
+            window.pz.reset({ animate: false });
           } else {
-            lastTap = now;
+            var t = e.changedTouches[0];
+            var r = img.getBoundingClientRect();
+            window.pz.zoom(2.5, {
+              focal: { x: t.clientX - r.left, y: t.clientY - r.top },
+              animate: false
+            });
           }
+          lastTap = 0;
+        } else {
+          lastTap = now;
         }
       });
 
-      /* ---- Pinch-to-zoom (2-finger) + horizontal swipe when not zoomed ---- */
+      /* ---- Horizontal swipe when not zoomed (Panzoom pans only when zoomed) ---- */
       var swipeX0 = 0, swipeY0 = 0, swipeActive = false;
-      var pinchFx = 0, pinchFy = 0;
       wrap.addEventListener('touchstart', function (e) {
         if (!overlay.classList.contains('open')) return;
-        if (e.touches.length === 2) {
-          gesturing = true;
-          swipeActive = false;
-          var dx = e.touches[0].clientX - e.touches[1].clientX;
-          var dy = e.touches[0].clientY - e.touches[1].clientY;
-          pinchDist0 = Math.sqrt(dx * dx + dy * dy);
-          pinchScale0 = scale;
-          // Focal point = midpoint between the two fingers.
-          pinchFx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-          pinchFy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        } else if (e.touches.length === 1) {
-          if (scale > 1) {
-            dragging = true;
-            dragX0 = e.touches[0].clientX;
-            dragY0 = e.touches[0].clientY;
-            tx0 = tx;
-            ty0 = ty;
-            wrap.classList.add('grabbing');
-          } else {
-            // Reset zoom baseline + capture swipe only if horizontal intent.
-            swipeX0 = e.touches[0].clientX;
-            swipeY0 = e.touches[0].clientY;
-            swipeActive = true;
-          }
+        if (e.touches.length === 1 && currentScale() <= 1) {
+          swipeX0 = e.touches[0].clientX;
+          swipeY0 = e.touches[0].clientY;
+          swipeActive = true;
         }
       }, { passive: true });
 
       wrap.addEventListener('touchmove', function (e) {
-        if (gesturing && e.touches.length === 2) {
-          e.preventDefault();
-          var dx = e.touches[0].clientX - e.touches[1].clientX;
-          var dy = e.touches[0].clientY - e.touches[1].clientY;
-          var d = Math.sqrt(dx * dx + dy * dy);
-          var ratio = d / pinchDist0;
-          var factor = ratio / (scale / Math.max(pinchScale0, 1e-6));
-          if (!isFinite(factor) || factor <= 0) factor = 1;
-          // Update focal point as fingers move, then zoom anchored there.
-          pinchFx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-          pinchFy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-          zoomAt(pinchFx, pinchFy, factor);
-        } else if (dragging && e.touches.length === 1) {
-          e.preventDefault();
-          tx = tx0 + (e.touches[0].clientX - dragX0);
-          ty = ty0 + (e.touches[0].clientY - dragY0);
-          clampPan();
-          applyTransform();
-        } else if (swipeActive && e.touches.length === 1 && scale <= 1) {
+        if (swipeActive && e.touches.length === 1 && currentScale() <= 1) {
           e.preventDefault();
         }
       }, { passive: false });
 
       wrap.addEventListener('touchend', function (e) {
-        if (scale <= 1 && swipeActive && e.changedTouches.length === 1) {
+        if (currentScale() <= 1 && swipeActive && e.changedTouches.length === 1) {
           var dx = e.changedTouches[0].clientX - swipeX0;
           var dy = e.changedTouches[0].clientY - swipeY0;
-          // Horizontal swipe navigates; vertical dismiss handled by tap on wrap.
           if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) {
             go(idx + (dx < 0 ? 1 : -1));
           }
         }
-        gesturing = false;
-        dragging = false;
         swipeActive = false;
         wrap.classList.remove('grabbing');
       }, { passive: true });
