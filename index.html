@@ -4311,11 +4311,11 @@
         var prev = document.createElement('button');
         prev.className = 'car-nav car-prev';
         prev.setAttribute('aria-label', 'Anterior');
-        prev.innerHTML = '‹';
+        prev.textContent = '‹';
         var next = document.createElement('button');
         next.className = 'car-nav car-next';
         next.setAttribute('aria-label', 'Siguiente');
-        next.innerHTML = '›';
+        next.textContent = '›';
         var dots = document.createElement('div');
         dots.className = 'car-dots';
         for (var i = 0; i < trackW; i++) {
@@ -5012,8 +5012,8 @@
         sheet.classList.remove('open');
         overlay.setAttribute('aria-hidden', 'true');
         sheet.setAttribute('aria-hidden', 'true');
-        heroEl.innerHTML = '';
-        bodyEl.innerHTML = '';
+        heroEl.textContent = '';
+        bodyEl.textContent = '';
         scrollHint.classList.remove('show');
         /* Closed by X/overlay/Escape: pop the entry openSheet pushed so a later
            back press leaves the site instead of a dead history step. */
@@ -5047,24 +5047,51 @@
 
       /* ---- Hero carousel ---- */
       function buildHero(d) {
-        var html = '';
+        heroEl.textContent = '';
         if (d.images.length > 1) {
-          html += '<div class="bs-carousel"><div class="bs-carousel-track">';
+          var car = document.createElement('div');
+          car.className = 'bs-carousel';
+          var track = document.createElement('div');
+          track.className = 'bs-carousel-track';
           d.images.forEach(function (src) {
-            html += '<div class="bs-slide"><img src="' + src + '" alt="' + d.title + '"></div>';
+            var slide = document.createElement('div');
+            slide.className = 'bs-slide';
+            var img = document.createElement('img');
+            img.src = src;
+            img.alt = d.title;
+            slide.appendChild(img);
+            track.appendChild(slide);
           });
-          html += '</div>';
-          html += '<button class="bs-car-nav bs-car-prev" aria-label="Anterior">\u2039</button>';
-          html += '<button class="bs-car-nav bs-car-next" aria-label="Siguiente">\u203a</button>';
-          html += '<div class="bs-car-dots">';
+          car.appendChild(track);
+          var prevBtn = document.createElement('button');
+          prevBtn.className = 'bs-car-nav bs-car-prev';
+          prevBtn.setAttribute('aria-label', 'Anterior');
+          prevBtn.textContent = '\u2039';
+          var nextBtn = document.createElement('button');
+          nextBtn.className = 'bs-car-nav bs-car-next';
+          nextBtn.setAttribute('aria-label', 'Siguiente');
+          nextBtn.textContent = '\u203a';
+          var dots = document.createElement('div');
+          dots.className = 'bs-car-dots';
           d.images.forEach(function (_, i) {
-            html += '<button' + (i === 0 ? ' class="active"' : '') + ' aria-label="Imagen ' + (i + 1) + '"></button>';
+            var b = document.createElement('button');
+            if (i === 0) b.className = 'active';
+            b.setAttribute('aria-label', 'Imagen ' + (i + 1));
+            dots.appendChild(b);
           });
-          html += '</div></div>';
+          car.appendChild(prevBtn);
+          car.appendChild(nextBtn);
+          car.appendChild(dots);
+          heroEl.appendChild(car);
         } else {
-          html = '<img src="' + d.images[0] + '" alt="' + d.title + '" style="width:100%;height:100%;object-fit:cover">';
+          var img = document.createElement('img');
+          img.src = d.images[0];
+          img.alt = d.title;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          heroEl.appendChild(img);
         }
-        heroEl.innerHTML = html;
 
         /* Wire carousel if >1 image */
         if (d.images.length > 1) {
@@ -5111,94 +5138,170 @@
 
       /* ---- Build body content ---- */
       function buildBody(svc, d) {
-        var h = '';
+        bodyEl.textContent = '';
+        function el(tag, cls) {
+          var n = document.createElement(tag);
+          if (cls) n.className = cls;
+          return n;
+        }
+        function appendText(parent, text) {
+          parent.appendChild(document.createTextNode(text));
+        }
+        function priceBlock(price, unit) {
+          var b = el('div', 'bs-price-block');
+          appendText(b, price);
+          appendText(b, ' ');
+          var s = el('small');
+          s.textContent = unit;
+          b.appendChild(s);
+          return b;
+        }
+        function schedBlock(sched) {
+          var s = el('div', 'bs-sched');
+          sched.forEach(function (x) {
+            var item = el('div', 'bs-sched-item');
+            var label = el('div', 'bs-sched-label');
+            label.textContent = x.label;
+            var val = el('div', 'bs-sched-val');
+            val.textContent = x.val;
+            item.appendChild(label);
+            item.appendChild(val);
+            s.appendChild(item);
+          });
+          return s;
+        }
+        function inclGrid(incl) {
+          var g = el('div', 'bs-grid');
+          incl.forEach(function (item) {
+            var gi = el('div', 'bs-grid-item');
+            var icon = el('div', 'bs-grid-icon');
+            icon.setAttribute('aria-hidden', 'true');
+            icon.textContent = item.icon;
+            var span = el('span');
+            span.textContent = item.text;
+            gi.appendChild(icon);
+            gi.appendChild(span);
+            g.appendChild(gi);
+          });
+          return g;
+        }
+        function menuBlock(menu) {
+          var m = el('div', 'bs-menu');
+          menu.forEach(function (x) {
+            var row = el('div', 'bs-menu-row');
+            var s1 = el('span');
+            s1.textContent = x.name;
+            var s2 = el('span');
+            s2.textContent = x.val;
+            row.appendChild(s1);
+            row.appendChild(s2);
+            m.appendChild(row);
+          });
+          return m;
+        }
+        function warnBlock(title, warn) {
+          var w = el('div', 'bs-warn');
+          var t = el('div', 'bs-warn-title');
+          t.textContent = title;
+          w.appendChild(t);
+          var ul = el('ul', 'bs-warn-list');
+          warn.forEach(function (x) {
+            var li = el('li');
+            li.textContent = x;
+            ul.appendChild(li);
+          });
+          w.appendChild(ul);
+          return w;
+        }
+        function waLink(wa, cta) {
+          var a = el('a', 'bs-wa');
+          a.href = wa;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.setAttribute('viewBox', '0 0 24 24');
+          svg.setAttribute('fill', 'currentColor');
+          var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', 'M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z');
+          svg.appendChild(path);
+          a.appendChild(svg);
+          appendText(a, cta);
+          return a;
+        }
+
+        var title = el('div', 'bs-title');
+        title.textContent = d.title;
+        var sub = el('div', 'bs-sub');
+        sub.textContent = d.sub;
+        bodyEl.appendChild(title);
+        bodyEl.appendChild(sub);
+
         if (svc === 'camping') {
-          h += '<div class="bs-title">' + d.title + '</div>';
-          h += '<div class="bs-sub">' + d.sub + '</div>';
           d.plans.forEach(function (p) {
-            h += '<div class="bs-plan">';
-            h += '<div class="bs-plan-head">';
-            h += '<div class="bs-plan-emoji" aria-hidden="true">' + p.emoji + '</div>';
-            h += '<div class="bs-plan-info">';
-            h += '<div class="bs-plan-name">' + p.name + '</div>';
-            h += '</div>';
-            h += '</div>';
-            h += '<div class="bs-plan-body">';
-            h += '<div class="bs-price-block">' + p.price + ' <small>' + p.unit + '</small></div>';
-            if (p.note) h += '<div class="bs-note">' + p.note + '</div>';
-            if (p.sched && p.sched.length) {
-              h += '<div class="bs-sched">';
-              p.sched.forEach(function (s) {
-                h += '<div class="bs-sched-item"><div class="bs-sched-label">' + s.label + '</div><div class="bs-sched-val">' + s.val + '</div></div>';
-              });
-              h += '</div>';
+            var plan = el('div', 'bs-plan');
+            var head = el('div', 'bs-plan-head');
+            var emoji = el('div', 'bs-plan-emoji');
+            emoji.setAttribute('aria-hidden', 'true');
+            emoji.textContent = p.emoji;
+            var info = el('div', 'bs-plan-info');
+            var name = el('div', 'bs-plan-name');
+            name.textContent = p.name;
+            info.appendChild(name);
+            head.appendChild(emoji);
+            head.appendChild(info);
+            plan.appendChild(head);
+            var body = el('div', 'bs-plan-body');
+            body.appendChild(priceBlock(p.price, p.unit));
+            if (p.note) {
+              var note = el('div', 'bs-note');
+              note.textContent = p.note;
+              body.appendChild(note);
             }
+            if (p.sched && p.sched.length) body.appendChild(schedBlock(p.sched));
             if (p.incl && p.incl.length) {
-              h += '<div class="bs-sec-title">Qué incluye</div>';
-              h += '<div class="bs-grid">';
-              p.incl.forEach(function (item) {
-                h += '<div class="bs-grid-item"><div class="bs-grid-icon" aria-hidden="true">' + item.icon + '</div><span>' + item.text + '</span></div>';
-              });
-              h += '</div>';
+              var secT = el('div', 'bs-sec-title');
+              secT.textContent = 'Qué incluye';
+              body.appendChild(secT);
+              body.appendChild(inclGrid(p.incl));
             }
             if (p.menu && p.menu.length) {
-              h += '<div class="bs-sec-title">Menú incluido</div>';
-              h += '<div class="bs-menu">';
-              p.menu.forEach(function (m) {
-                h += '<div class="bs-menu-row"><span>' + m.name + '</span><span>' + m.val + '</span></div>';
-              });
-              h += '</div>';
+              var secM = el('div', 'bs-sec-title');
+              secM.textContent = 'Menú incluido';
+              body.appendChild(secM);
+              body.appendChild(menuBlock(p.menu));
             }
-            if (p.warn && p.warn.length) {
-              h += '<div class="bs-warn">';
-              h += '<div class="bs-warn-title">Condiciones</div>';
-              h += '<ul class="bs-warn-list">';
-              p.warn.forEach(function (w) { h += '<li>' + w + '</li>'; });
-              h += '</ul></div>';
-            }
-            h += '<a class="bs-wa" href="' + p.wa + '" target="_blank" rel="noopener">';
-            h += '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>';
-            h += p.cta + '</a>';
-            h += '</div></div>';
+            if (p.warn && p.warn.length) body.appendChild(warnBlock('Condiciones', p.warn));
+            body.appendChild(waLink(p.wa, p.cta));
+            plan.appendChild(body);
+            bodyEl.appendChild(plan);
           });
         } else {
-          h += '<div class="bs-title">' + d.title + '</div>';
-          h += '<div class="bs-sub">' + d.sub + '</div>';
-          h += '<div class="bs-price-block">' + d.price + ' <small>' + d.priceUnit + '</small></div>';
-          if (d.price2) {
-            h += '<div class="bs-price-block">' + d.price2 + ' <small>' + d.price2Unit + '</small></div>';
-          }
+          bodyEl.appendChild(priceBlock(d.price, d.priceUnit));
+          if (d.price2) bodyEl.appendChild(priceBlock(d.price2, d.price2Unit));
           if (d.sched && d.sched.length) {
-            h += '<div class="bs-sec-title">Horarios</div>';
-            h += '<div class="bs-sched">';
-            d.sched.forEach(function (s) {
-              h += '<div class="bs-sched-item"><div class="bs-sched-label">' + s.label + '</div><div class="bs-sched-val">' + s.val + '</div></div>';
-            });
-            h += '</div>';
+            var secH = el('div', 'bs-sec-title');
+            secH.textContent = 'Horarios';
+            bodyEl.appendChild(secH);
+            bodyEl.appendChild(schedBlock(d.sched));
           }
           if (d.desc) {
-            h += '<p style="font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:16px">' + d.desc + '</p>';
+            var desc = el('p');
+            desc.style.fontSize = '.82rem';
+            desc.style.color = 'var(--muted)';
+            desc.style.lineHeight = '1.55';
+            desc.style.marginBottom = '16px';
+            desc.textContent = d.desc;
+            bodyEl.appendChild(desc);
           }
           if (d.incl && d.incl.length) {
-            h += '<div class="bs-sec-title">Qué incluye</div>';
-            h += '<div class="bs-grid">';
-            d.incl.forEach(function (item) {
-              h += '<div class="bs-grid-item"><div class="bs-grid-icon" aria-hidden="true">' + item.icon + '</div><span>' + item.text + '</span></div>';
-            });
-            h += '</div>';
+            var secI = el('div', 'bs-sec-title');
+            secI.textContent = 'Qué incluye';
+            bodyEl.appendChild(secI);
+            bodyEl.appendChild(inclGrid(d.incl));
           }
-          if (d.warn && d.warn.length) {
-            h += '<div class="bs-warn">';
-            h += '<div class="bs-warn-title">Recomendaciones</div>';
-            h += '<ul class="bs-warn-list">';
-            d.warn.forEach(function (w) { h += '<li>' + w + '</li>'; });
-            h += '</ul></div>';
-          }
-          h += '<a class="bs-wa" href="' + d.wa + '" target="_blank" rel="noopener">';
-          h += '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z"/></svg>';
-          h += d.cta + '</a>';
+          if (d.warn && d.warn.length) bodyEl.appendChild(warnBlock('Recomendaciones', d.warn));
+          bodyEl.appendChild(waLink(d.wa, d.cta));
         }
-        bodyEl.innerHTML = h;
       }
 
       /* ---- List item interaction.

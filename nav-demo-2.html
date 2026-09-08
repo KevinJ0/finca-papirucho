@@ -626,7 +626,7 @@ a{text-decoration:none;color:inherit}
     /* Dots */
     function updateDots(){
       var visible = allCards.filter(function(c){return c.style.display !== 'none'});
-      dotsWrap.innerHTML = '';
+      dotsWrap.textContent = '';
       visible.forEach(function(_,i){
         var dot = document.createElement('button');
         dot.className = 'c1-dot' + (i===0?' active':'');
@@ -808,30 +808,79 @@ a{text-decoration:none;color:inherit}
       if(!d) return;
       document.getElementById('bs-hero').style.background = d.bg;
       document.getElementById('bs-hero-emoji').textContent = d.emoji;
-      document.getElementById('bs-hero-badge').innerHTML = '<span class="badge">'+d.badge+'</span>';
+      var badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = d.badge;
+      document.getElementById('bs-hero-badge').textContent = '';
+      document.getElementById('bs-hero-badge').appendChild(badge);
       document.getElementById('bs-title').textContent = d.title;
       document.getElementById('bs-subtitle').textContent = d.sub;
       /* Hours */
-      var hHtml = '';
+      var hoursWrap = document.getElementById('bs-hours');
+      hoursWrap.textContent = '';
       d.hours.forEach(function(h){
-        hHtml += '<div class="bs-hour-item"><div class="bs-hour-label">'+h.label+'</div><div class="bs-hour-val">'+h.val+'</div></div>';
+        var item = document.createElement('div');
+        item.className = 'bs-hour-item';
+        var label = document.createElement('div');
+        label.className = 'bs-hour-label';
+        label.textContent = h.label;
+        var val = document.createElement('div');
+        val.className = 'bs-hour-val';
+        val.textContent = h.val;
+        item.appendChild(label);
+        item.appendChild(val);
+        hoursWrap.appendChild(item);
       });
-      document.getElementById('bs-hours').innerHTML = hHtml;
       /* Grid */
-      var gHtml = '';
+      var gridWrap = document.getElementById('bs-grid');
+      gridWrap.textContent = '';
       d.grid.forEach(function(g){
-        gHtml += '<div class="bs-grid-item"><div class="bs-gi-icon" style="background:'+g.bg+'">'+g.icon+'</div><span>'+g.text+'</span></div>';
+        var item = document.createElement('div');
+        item.className = 'bs-grid-item';
+        var icon = document.createElement('div');
+        icon.className = 'bs-gi-icon';
+        icon.style.background = g.bg;
+        icon.textContent = g.icon;
+        var span = document.createElement('span');
+        span.textContent = g.text;
+        item.appendChild(icon);
+        item.appendChild(span);
+        gridWrap.appendChild(item);
       });
-      document.getElementById('bs-grid').innerHTML = gHtml;
       /* Menu */
-      var mHtml = '<div class="bs-menu-title">'+d.menu.title+'</div><div class="bs-menu-list">';
+      var menuWrap = document.getElementById('bs-menu');
+      menuWrap.textContent = '';
+      var menuTitle = document.createElement('div');
+      menuTitle.className = 'bs-menu-title';
+      menuTitle.textContent = d.menu.title;
+      menuWrap.appendChild(menuTitle);
+      var menuList = document.createElement('div');
+      menuList.className = 'bs-menu-list';
       d.menu.items.forEach(function(m){
-        mHtml += '<div class="bs-menu-item"><span>'+m.name+'</span><span>'+m.val+'</span></div>';
+        var item = document.createElement('div');
+        item.className = 'bs-menu-item';
+        var s1 = document.createElement('span');
+        s1.textContent = m.name;
+        var s2 = document.createElement('span');
+        s2.textContent = m.val;
+        item.appendChild(s1);
+        item.appendChild(s2);
+        menuList.appendChild(item);
       });
-      mHtml += '</div>';
-      document.getElementById('bs-menu').innerHTML = mHtml;
+      menuWrap.appendChild(menuList);
       /* Conditions */
-      document.getElementById('bs-conditions').innerHTML = '<div class="bs-conditions-title">⚠ Condiciones</div><p style="font-size:.82rem;color:var(--ink);line-height:1.55">'+d.conditions+'</p>';
+      var condWrap = document.getElementById('bs-conditions');
+      condWrap.textContent = '';
+      var condTitle = document.createElement('div');
+      condTitle.className = 'bs-conditions-title';
+      condTitle.textContent = '\u26A0 Condiciones';
+      condWrap.appendChild(condTitle);
+      var condP = document.createElement('p');
+      condP.style.fontSize = '.82rem';
+      condP.style.color = 'var(--ink)';
+      condP.style.lineHeight = '1.55';
+      condP.textContent = d.conditions;
+      condWrap.appendChild(condP);
       /* WA link */
       document.getElementById('bs-wa').href = d.wa;
     }

@@ -647,7 +647,27 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--sand)
         document.getElementById(id).classList.add('active');
         closeSheet();
         var name = it.querySelector('.b-sheet-name').textContent;
-        trigger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> ' + name;
+        var SVG_NS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2.5');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        var rects = [ [3,3,7,7], [14,3,7,7], [3,14,7,7], [14,14,7,7] ];
+        rects.forEach(function (r) {
+          var rect = document.createElementNS(SVG_NS, 'rect');
+          rect.setAttribute('x', r[0]);
+          rect.setAttribute('y', r[1]);
+          rect.setAttribute('width', r[2]);
+          rect.setAttribute('height', r[3]);
+          rect.setAttribute('rx', '1.5');
+          svg.appendChild(rect);
+        });
+        trigger.textContent = '';
+        trigger.appendChild(svg);
+        trigger.appendChild(document.createTextNode(' ' + name));
       });
     });
   })();
