@@ -4533,10 +4533,9 @@
       }).filter(Boolean);
       if (!sections.length) return;
 
-      var ticking = false;
+      var settleTimer = null;
 
       function update() {
-        ticking = false;
         var doc = document.documentElement;
         var atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 2;
 
@@ -4558,17 +4557,28 @@
         });
       }
 
-      function onScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(update);
+      /* El marcado solo se recalcula cuando el scroll se asienta: durante el
+         scroll suave del menú no salta de sección en sección antes de llegar
+         al destino. */
+      function scheduleUpdate() {
+        if (settleTimer) clearTimeout(settleTimer);
+        settleTimer = setTimeout(function () {
+          settleTimer = null;
+          update();
+        }, 250);
       }
 
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      links.forEach(function (a) {
-        a.addEventListener('click', update);
-      });
+      function settleNow() {
+        if (settleTimer) clearTimeout(settleTimer);
+        settleTimer = null;
+        update();
+      }
+
+      window.addEventListener('scroll', scheduleUpdate, { passive: true });
+      window.addEventListener('resize', scheduleUpdate);
+      if ('onscrollend' in window) {
+        window.addEventListener('scrollend', settleNow);
+      }
       update();
     })();
 
