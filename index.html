@@ -5384,14 +5384,16 @@
             Math.abs(s - startState.s) > 0.05;
           startState = null;
           pzGesture = moved;
-          var s = instance.getScale();
           if (s <= 1) {
             instance.reset({ animate: false });
             return;
           }
+          // Panzoom's transform is `scale(s) translate(x, y)`, so visual
+          // displacement equals x*s (getPan returns pre-scale units). Convert
+          // the viewport-based limits into those same units before clamping.
           var r = img.getBoundingClientRect();
-          var maxX = Math.max(0, (r.width - window.innerWidth) / 2);
-          var maxY = Math.max(0, (r.height - window.innerHeight) / 2);
+          var maxX = Math.max(0, (r.width - window.innerWidth) / 2 / s);
+          var maxY = Math.max(0, (r.height - window.innerHeight) / 2 / s);
           var nx = Math.max(-maxX, Math.min(maxX, t.x));
           var ny = Math.max(-maxY, Math.min(maxY, t.y));
           if (nx !== t.x || ny !== t.y) {
