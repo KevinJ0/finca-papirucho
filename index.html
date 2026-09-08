@@ -4536,19 +4536,22 @@
       var settleTimer = null;
 
       function update() {
-        var doc = document.documentElement;
-        var atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 2;
-
-        /* En el fondo del documento no hay más scroll: la última sección
-           (#contacto) nunca cruza la línea de activación en viewports altos,
-           así que se activa explícitamente. */
+        /* La línea de activación se mide RELATIVA al viewport, igual que
+           getBoundingClientRect().top — mezclar con scrollY adelanta el
+           marcado una sección. */
+        var line = window.innerHeight * 0.4;
         var target = ids[0];
-        if (!atBottom) {
-          var line = window.scrollY + window.innerHeight * 0.4;
-          sections.forEach(function (s, i) {
-            if (s.getBoundingClientRect().top <= line) target = ids[i]
-          });
-        } else {
+        sections.forEach(function (s, i) {
+          if (s.getBoundingClientRect().top <= line) target = ids[i]
+        });
+
+        /* Fondo del documento: si la última sección quedó por debajo de la
+           línea pero ya está visible en pantalla (no hay más scroll para
+           subirla), se activa explícitamente. */
+        var doc = document.documentElement;
+        var last = sections[sections.length - 1];
+        var atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 2;
+        if (atBottom && last.getBoundingClientRect().top <= window.innerHeight) {
           target = ids[ids.length - 1];
         }
 
