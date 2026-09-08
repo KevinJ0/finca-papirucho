@@ -2355,8 +2355,8 @@
     @media (max-width: 30rem) {
       .wa-float {
         bottom: 88px;
-        width: 46px;
-        height: 46px;
+        width: 52px;
+        height: 52px;
       }
     }
 
@@ -4465,13 +4465,46 @@
             }
           });
         }, {
-          threshold: .12,
+          threshold: 0,
           rootMargin: '0px 0px -8% 0px'
         });
         els.forEach(function (e) {
           io.observe(e)
         });
       }
+      // Safety net: if the observer never fires (old mobile browsers, exotic
+      // webviews), force-reveal anything already inside the viewport shortly
+      // after load. Sections further down still animate on scroll.
+      setTimeout(function () {
+        document.querySelectorAll('.reveal:not(.in)').forEach(function (e) {
+          var r = e.getBoundingClientRect();
+          if (r.top < window.innerHeight && r.bottom > 0) {
+            e.classList.add('in');
+          }
+        });
+      }, 2500);
+      // Scroll fallback: reveal anything that scrolls into view even when the
+      // observer above never fires. Detaches itself once nothing is hidden.
+      var scrollRAF = false;
+      function revealOnScroll() {
+        if (scrollRAF) return;
+        scrollRAF = true;
+        requestAnimationFrame(function () {
+          scrollRAF = false;
+          var hidden = document.querySelectorAll('.reveal:not(.in)');
+          if (!hidden.length) {
+            window.removeEventListener('scroll', revealOnScroll);
+            return;
+          }
+          hidden.forEach(function (e) {
+            var r = e.getBoundingClientRect();
+            if (r.top < window.innerHeight && r.bottom > 0) {
+              e.classList.add('in');
+            }
+          });
+        });
+      }
+      window.addEventListener('scroll', revealOnScroll, { passive: true });
     } else {
       document.querySelectorAll('.reveal').forEach(function (e) {
         e.classList.add('in')
@@ -5418,13 +5451,21 @@
       });
 
       /* ---- Wheel zoom (desktop), anchored at the cursor position ---- */
+      // Zoom is anchored to the image's transform-origin. Since the transform is
+      // `translate(tx,ty) scale(s)` with `transform-origin: center center`, the
+      // scale pivot is the layout center of the image, which matches the center of
+      // the wrapping overlay (the image is flex-centered and scales around it).
+      // The layout center never changes on zoom, so we must use the overlay center,
+      // NOT the image's transformed bounding rect (whose center drifts as the image
+      // grows and pans). Using the drifting rect center is what made every zoom
+      // anchor to a fixed leftward point instead of the cursor.
       function zoomAt(px, py, factor) {
         var ns = Math.max(1, Math.min(scale * factor, 4));
         // If zooming out all the way to 1, reset pan entirely.
         if (ns === 1) { scale = 1; tx = 0; ty = 0; applyTransform(); return; }
-        var rect = img.getBoundingClientRect();
-        var cx = rect.left + rect.width / 2;
-        var cy = rect.top + rect.height / 2;
+        // Fixed layout-center pivot of the transform-origin.
+        var cx = window.innerWidth / 2;
+        var cy = window.innerHeight / 2;
         // Point on the image under the focal point (in pre-zoom coords).
         var ux = (px - cx - tx) / scale;
         var uy = (py - cy - ty) / scale;
