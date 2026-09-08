@@ -4519,27 +4519,46 @@
         var id = a.getAttribute('href').slice(1);
         if (id) ids.push(id)
       });
-      if (!ids.length || !('IntersectionObserver' in window)) return;
+      if (!ids.length) return;
       var sections = ids.map(function (id) {
         return document.getElementById(id)
       }).filter(Boolean);
       if (!sections.length) return;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) {
-            var target = '#' + en.target.id;
-            links.forEach(function (a) {
-              a.classList.toggle('active', a.getAttribute('href') === target)
-            });
-          }
+
+      var ticking = false;
+
+      function update() {
+        ticking = false;
+        var doc = document.documentElement;
+        var atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 2;
+
+        /* En el fondo del documento no hay más scroll: la última sección
+           (#contacto) nunca cruza la línea de activación en viewports altos,
+           así que se activa explícitamente. */
+        var target = ids[0];
+        if (!atBottom) {
+          var line = window.scrollY + window.innerHeight * 0.4;
+          sections.forEach(function (s, i) {
+            if (s.getBoundingClientRect().top <= line) target = ids[i]
+          });
+        } else {
+          target = ids[ids.length - 1];
+        }
+
+        links.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + target)
         });
-      }, {
-        rootMargin: '-35% 0px -60% 0px',
-        threshold: 0
-      });
-      sections.forEach(function (s) {
-        io.observe(s)
-      });
+      }
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
     })();
 
     /* ---- Progressive image loading: LQIP -> low -> med -> full ---- */
