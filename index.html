@@ -4997,9 +4997,16 @@
         /* Move focus into the dialog for keyboard/screen-reader users */
         closeBtn.focus();
         updateScrollHint();
+        /* Let the Android/iOS back button close the sheet instead of leaving the page. */
+        history.pushState({ bsSheet: true }, '');
       };
 
+      /* When closing from the popstate path (device back button), the history
+         entry was already consumed, so do not call history.back() again. */
+      var bsClosingViaPop = false;
+
       function closeSheet() {
+        var wasOpen = sheet.classList.contains('open');
         unlockScroll();
         overlay.classList.remove('open');
         sheet.classList.remove('open');
@@ -5008,6 +5015,11 @@
         heroEl.innerHTML = '';
         bodyEl.innerHTML = '';
         scrollHint.classList.remove('show');
+        /* Closed by X/overlay/Escape: pop the entry openSheet pushed so a later
+           back press leaves the site instead of a dead history step. */
+        if (wasOpen && !bsClosingViaPop && history.state && history.state.bsSheet) {
+          history.back();
+        }
       }
 
       closeBtn.addEventListener('click', closeSheet);
@@ -5016,7 +5028,13 @@
         if (e.key === 'Escape' && sheet.classList.contains('open')) closeSheet();
       });
 
-      /* ---- Scroll hint: show arrow while there is more content below ---- */
+      /* Android/iOS back button: close the sheet instead of leaving the page. */
+      window.addEventListener('popstate', function () {
+        if (!sheet.classList.contains('open')) return;
+        bsClosingViaPop = true;
+        closeSheet();
+        bsClosingViaPop = false;
+      });
       function updateScrollHint() {
         if (!scrollHint) return;
         var atBottom = sheet.scrollTop + sheet.clientHeight >= sheet.scrollHeight - 4;
