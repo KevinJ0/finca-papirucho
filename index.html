@@ -7,15 +7,23 @@
   <title>Finca Papirucho | Río Sonador, Yásica</title>
   <meta name="description"
     content="Excursiones, camping, glamping y áreas recreativas junto al río Sonador, en Yásica, Puerto Plata. Reserva tu aventura por WhatsApp.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:locale" content="es_DO">
+  <meta property="og:site_name" content="Finca Papirucho">
   <meta property="og:title" content="Finca Papirucho | Río Sonador, Yásica">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://kevinj0.github.io/finca-papirucho-redesign/">
+  <meta property="og:url" content="https://finca-papirucho.kevinjooo59.workers.dev/">
   <meta property="og:description"
     content="Excursiones, camping, glamping y áreas recreativas junto al río Sonador, en Yásica, Puerto Plata. Reserva tu aventura por WhatsApp.">
-  <meta property="og:image" content="https://res.cloudinary.com/kevinj0/image/upload/v1/camping_hero.jpg">
-  <meta property="og:opens" content="12:00">
+  <meta property="og:image" content="https://fincapapirucho.site/assets/progressive/6664387e_web.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Finca Papirucho | Río Sonador, Yásica">
+  <meta name="twitter:description"
+    content="Excursiones, camping, glamping y áreas recreativas junto al río Sonador, en Yásica, Puerto Plata. Reserva tu aventura por WhatsApp.">
+  <meta name="twitter:image" content="https://fincapapirucho.site/assets/progressive/6664387e_web.jpg">
+  <link rel="canonical" href="https://finca-papirucho.kevinjooo59.workers.dev/">
   <link rel="icon" href="assets/logo.jpg">
   <script type="application/ld+json">
     {
@@ -30,9 +38,9 @@
         "addressRegion": "Puerto Plata",
         "addressCountry": "DO"
       },
-      "telephone": "+1-849-207-092",
-      "url": "https://kevinj0.github.io/finca-papirucho-redesign/",
-      "image": "https://bio.linkcdn.cc/upload/21008gceifg/2026012820/176963165200070427.png",
+      "telephone": "+1-849-207-7092",
+      "url": "https://finca-papirucho.kevinjooo59.workers.dev/",
+      "image": "https://fincapapirucho.site/assets/progressive/6664387e_web.jpg",
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
@@ -274,28 +282,6 @@
     a.badge:hover {
       background: rgba(255, 255, 255, .3);
       transform: translateY(-1px)
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      margin-top: 20px;
-      background: linear-gradient(135deg, #25d366, #128c7e);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 800;
-      font-size: .86rem;
-      letter-spacing: .4px;
-      padding: 13px 24px;
-      border-radius: 999px;
-      box-shadow: 0 10px 26px rgba(37, 211, 102, .35);
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .hero-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 32px rgba(37, 211, 102, .45)
     }
 
     .scroll-hint {
@@ -2357,10 +2343,9 @@
       animation: wa-pulse 2.6s ease-in-out infinite;
     }
 
-    /* Hidden while the hero "Reservar por WhatsApp" CTA is on screen:
-       the float only needs to exist once the CTA scrolls out of view. */
-    .wa-float.is-hidden {
-      display: none;
+    .wa-float:hover {
+      transform: scale(1.08);
+      box-shadow: 0 14px 32px rgba(37, 211, 102, .5)
     }
 
     /* Very narrow screens: no room for WS beside the centered menu,
@@ -2372,11 +2357,6 @@
         width: 52px;
         height: 52px;
       }
-    }
-
-    .wa-float:hover {
-      transform: scale(1.08);
-      box-shadow: 0 14px 32px rgba(37, 211, 102, .5)
     }
 
     @keyframes wa-pulse {
@@ -3290,12 +3270,6 @@
           <a class="badge" href="#fourwheel" data-tab="fourwheel">Fourwheel</a>
           <a class="badge" href="#balneario" data-tab="balneario">Áreas Recreativas</a>
         </div>
-        <a class="hero-cta"
-          href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20quiero%20hacer%20una%20reserva."
-          target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-            <path
-              d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5-.1-.2-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
-          </svg>Reservar por WhatsApp</a>
       </div>
     </header>
 
@@ -3878,9 +3852,6 @@
               %</li>
           </ul>
         </div>
-        <a class="xp-btn" style="margin-top:18px" href="https://wa.me/18492077092" target="_blank" rel="noopener"><svg
-            viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z" /></svg>Reservar por WhatsApp</a>
       </div>
 
       <!-- ===== VIDEO ===== -->
@@ -5763,24 +5734,6 @@
       <path
         d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5-.1-.2-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
     </svg></a>
-
-  <script>
-    /* ---- Floating WhatsApp button: hidden while the hero CTA is visible ----
-       The hero already shows "Reservar por WhatsApp"; the float only appears
-       after that CTA scrolls out of the viewport. */
-    (function () {
-      var heroCta = document.querySelector('.hero-cta');
-      var waFloat = document.querySelector('.wa-float');
-      if (!heroCta || !waFloat || !('IntersectionObserver' in window)) return;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          // Show the float only when the hero CTA is fully out of view.
-          waFloat.classList.toggle('is-hidden', entry.isIntersecting);
-        });
-      }, { threshold: 0.2 });
-      io.observe(heroCta);
-    })();
-  </script>
 
 </body>
 
