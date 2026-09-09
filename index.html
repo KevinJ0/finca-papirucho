@@ -58,6 +58,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&display=swap"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     :root {
       --forest: #1f2f1a;
@@ -78,6 +79,15 @@
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent
+    }
+
+    /* Material Icons hereda el font-size del contenedor y se centra solo
+       dentro de los botones que usan place-items: center. */
+    .material-icons {
+      font-size: inherit;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
     }
 
     html {
@@ -3416,7 +3426,7 @@
               <div class="bs-list-name">Camping</div>
               <div class="bs-list-price">Desde RD$700 · Grupal · Glamping</div>
             </div>
-            <div class="bs-list-arrow">›</div>
+            <div class="bs-list-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
           </div>
           <div class="bs-list-item" data-svc="excursion" role="button" tabindex="0" aria-label="Ver detalles de Excursión Río Sonador" onclick="window.openSheet('excursion')">
             <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/9d1519dc_web.jpg" alt="" loading="lazy"></div>
@@ -3425,7 +3435,7 @@
               <div class="bs-list-name">Excursión Río Sonador</div>
               <div class="bs-list-price">RD$1,200 · 3 km ida y vuelta</div>
             </div>
-            <div class="bs-list-arrow">›</div>
+            <div class="bs-list-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
           </div>
           <div class="bs-list-item" data-svc="fourwheel" role="button" tabindex="0" aria-label="Ver detalles de Fourwheel Tours" onclick="window.openSheet('fourwheel')">
             <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/94c56be1_web.jpg" alt="" loading="lazy"></div>
@@ -3434,7 +3444,7 @@
               <div class="bs-list-name">Fourwheel Tours</div>
               <div class="bs-list-price">RD$3,000 · 3 horarios diarios</div>
             </div>
-            <div class="bs-list-arrow">›</div>
+            <div class="bs-list-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
           </div>
           <div class="bs-list-item" data-svc="balneario" role="button" tabindex="0" aria-label="Ver detalles de Áreas Recreativas" onclick="window.openSheet('balneario')">
             <div class="bs-list-thumb"><img decoding="async" src="assets/progressive/443b56bc_web.jpg" alt="" loading="lazy"></div>
@@ -3443,7 +3453,7 @@
               <div class="bs-list-name">Áreas Recreativas</div>
               <div class="bs-list-price">RD$3,000 · Balneario</div>
             </div>
-            <div class="bs-list-arrow">›</div>
+            <div class="bs-list-arrow"><span class="material-icons" aria-hidden="true">chevron_right</span></div>
           </div>
         </div>
 
@@ -4076,7 +4086,7 @@
               <circle cx="12" cy="12" r="4" />
               <circle cx="17.5" cy="6.5" r=".8" fill="currentColor" /></svg></span>
           <span class="txt">Síguenos en Instagram<small>@fincapapirucho</small></span>
-          <span class="arrow">→</span>
+          <span class="arrow material-icons" aria-hidden="true">arrow_forward</span>
         </a>
         <a class="cta" href="https://wa.me/18492077092" target="_blank" rel="noopener">
           <span class="ico wa"><svg viewBox="0 0 24 24" fill="currentColor">
@@ -4084,7 +4094,7 @@
                 d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.3.1-.2 0-.4 0-.5-.1-.2-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z" />
             </svg></span>
           <span class="txt">Escríbenos por WhatsApp<small>Reservas y consultas</small></span>
-          <span class="arrow">→</span>
+          <span class="arrow material-icons" aria-hidden="true">arrow_forward</span>
         </a>
         <a class="cta" href="https://maps.app.goo.gl/sFb7X8fM2yFeqbTo8?g_st=ic" target="_blank" rel="noopener">
           <span class="ico map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -4092,7 +4102,7 @@
               <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
               <circle cx="12" cy="10" r="3" /></svg></span>
           <span class="txt">Ubicación | Location<small>Cómo llegar</small></span>
-          <span class="arrow">→</span>
+          <span class="arrow material-icons" aria-hidden="true">arrow_forward</span>
         </a>
         <a class="cta" href="https://www.facebook.com/sonador.yasica" target="_blank" rel="noopener">
           <span class="ico fb"><svg viewBox="0 0 24 24" fill="currentColor">
@@ -4100,7 +4110,7 @@
                 d="M13.5 21v-7h2.4l.4-3h-2.8V9.1c0-.9.3-1.5 1.6-1.5h1.3V4.9c-.2 0-1-.1-1.9-.1-1.9 0-3.2 1.2-3.2 3.3V11H8.5v3h2.8v7h2.2Z" />
             </svg></span>
           <span class="txt">Facebook<small>@sonador.yasica</small></span>
-          <span class="arrow">→</span>
+          <span class="arrow material-icons" aria-hidden="true">arrow_forward</span>
         </a>
       </div>
 
@@ -4152,6 +4162,15 @@
     };
   </script>
   <script>
+    /* ---- Material icon helper: crea un <span class="material-icons"> con la ligadura dada ---- */
+    function iconEl(name) {
+      var el = document.createElement('span');
+      el.className = 'material-icons';
+      el.setAttribute('aria-hidden', 'true');
+      el.textContent = name;
+      return el;
+    }
+
     /* ---- Progressive loading helper for dynamically-created carousel images ---- */
 
     /* Envuelve un <img> en su .prog-wrap (si ya no lo está) y lo devuelve.
@@ -4290,11 +4309,11 @@
         var prev = document.createElement('button');
         prev.className = 'car-nav car-prev';
         prev.setAttribute('aria-label', 'Anterior');
-        prev.textContent = '‹';
+        prev.appendChild(iconEl('chevron_left'));
         var next = document.createElement('button');
         next.className = 'car-nav car-next';
         next.setAttribute('aria-label', 'Siguiente');
-        next.textContent = '›';
+        next.appendChild(iconEl('chevron_right'));
         var dots = document.createElement('div');
         dots.className = 'car-dots';
         for (var i = 0; i < trackW; i++) {
@@ -4783,6 +4802,15 @@
     (function () {
       console.log('[BS] bottom sheet script loaded');
 
+      /* ---- Material icon helper: crea un <span class="material-icons"> con la ligadura dada ---- */
+      function iconEl(name) {
+        var el = document.createElement('span');
+        el.className = 'material-icons';
+        el.setAttribute('aria-hidden', 'true');
+        el.textContent = name;
+        return el;
+      }
+
       var overlay = document.getElementById('bs-overlay');
       var sheet = document.getElementById('bs-sheet');
       var closeBtn = document.getElementById('bs-close');
@@ -5080,11 +5108,11 @@
           var prevBtn = document.createElement('button');
           prevBtn.className = 'bs-car-nav bs-car-prev';
           prevBtn.setAttribute('aria-label', 'Anterior');
-          prevBtn.textContent = '\u2039';
+          prevBtn.appendChild(iconEl('chevron_left'));
           var nextBtn = document.createElement('button');
           nextBtn.className = 'bs-car-nav bs-car-next';
           nextBtn.setAttribute('aria-label', 'Siguiente');
-          nextBtn.textContent = '\u203a';
+          nextBtn.appendChild(iconEl('chevron_right'));
           var dots = document.createElement('div');
           dots.className = 'bs-car-dots';
           d.images.forEach(function (_, i) {
@@ -5367,8 +5395,8 @@
     <div class="cv-hint" id="cv-hint">Pellizca para hacer zoom · Doble toque para ampliar</div>
     <div class="cv-caption" id="cv-caption"></div>
     <div class="cv-counter" id="cv-counter"></div>
-    <button class="cv-nav cv-prev" id="cv-prev" aria-label="Imagen anterior">‹</button>
-    <button class="cv-nav cv-next" id="cv-next" aria-label="Imagen siguiente">›</button>
+    <button class="cv-nav cv-prev" id="cv-prev" aria-label="Imagen anterior"><span class="material-icons" aria-hidden="true">chevron_left</span></button>
+    <button class="cv-nav cv-next" id="cv-next" aria-label="Imagen siguiente"><span class="material-icons" aria-hidden="true">chevron_right</span></button>
   </div>
 
   <script>
