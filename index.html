@@ -72,6 +72,10 @@
       --ink: #231d12;
       --muted: #6d6554;
       --ring: rgba(232, 169, 60, .55);
+      --fs-body: .93rem;
+      --fs-ui: .85rem;
+      --fs-meta: .78rem;
+      --fs-micro: .7rem;
     }
 
     * {
@@ -102,6 +106,27 @@
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       padding-bottom: 96px;
+    }
+
+    /* Skip link: visible solo al recibir foco (WCAG 2.4.1 — Bypass Blocks) */
+    .skip-link {
+      position: fixed;
+      top: -100px;
+      left: 16px;
+      z-index: 9999;
+      padding: 12px 20px;
+      border-radius: 14px;
+      background: var(--forest);
+      color: #fff;
+      font-weight: 700;
+      font-size: .95rem;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(31, 47, 26, .35);
+      transition: top .2s ease;
+    }
+
+    .skip-link:focus {
+      top: 16px;
     }
 
     .wrap {
@@ -358,18 +383,26 @@
       border-radius: 2px
     }
 
-    .kicker {
-      text-align: center;
+    .kicker,
+    .sec-card .kicker2 {
       color: var(--leaf);
       font-weight: 800;
-      font-size: .72rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      font-size: var(--fs-micro);
+      letter-spacing: 2.5px;
+      text-transform: uppercase
+    }
+
+    .kicker {
+      text-align: center
+    }
+
+    .sec-card .kicker2 {
+      margin-bottom: 8px
     }
 
     .section-title {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.65rem;
       line-height: 1.15;
       text-align: center;
@@ -498,6 +531,18 @@
       transform: translateY(-1px) scale(.99)
     }
 
+    .cta-fallback {
+      margin-top: -8px;
+      padding-left: 18px;
+      font-size: .82rem;
+      color: rgba(31, 47, 26, .65)
+    }
+
+    .cta-fallback a {
+      color: var(--forest);
+      font-weight: 600
+    }
+
     .cta .ico {
       flex: 0 0 auto;
       width: 46px;
@@ -594,7 +639,7 @@
     .feature .f-txt h2 {
       font-family: 'Fraunces', serif;
       color: #fff;
-      font-weight: 800;
+      font-weight: 900;
       font-size: clamp(1.9rem, 5vw, 2.9rem);
       line-height: 1.12;
       margin-bottom: 14px;
@@ -700,6 +745,155 @@
       white-space: pre-line;
     }
 
+    /* ===== Detail disclosures (tab panels + bottom sheet) =====
+       Misma sintaxis de desplegable que la FAQ (indicador .plus) para que el
+       patrón de interacción se lea idéntico en toda la página. */
+    .p-dl,
+    .bs-dl {
+      border: 1px solid rgba(31, 47, 26, .1);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .p-dl {
+      background: var(--sand);
+      margin: 16px 0
+    }
+
+    .bs-dl {
+      background: var(--cream-glass);
+      margin-bottom: 12px
+    }
+
+    .p-dl[open],
+    .bs-dl[open] {
+      border-color: rgba(91, 138, 60, .35);
+      box-shadow: 0 8px 20px rgba(31, 47, 26, .08)
+    }
+
+    .p-dl > summary,
+    .bs-dl > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px 12px 16px;
+      color: var(--leaf);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .p-dl > summary {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: .72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase
+    }
+
+    .bs-dl > summary {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--ink)
+    }
+
+    .p-dl > summary.warn {
+      color: #b24a2f
+    }
+
+    .p-dl > summary::-webkit-details-marker,
+    .bs-dl > summary::-webkit-details-marker {
+      display: none
+    }
+
+    .p-dl > summary .plus,
+    .bs-dl > summary .plus {
+      position: relative;
+      flex: 0 0 auto;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--cream);
+      color: var(--forest);
+      transition: background .25s ease;
+    }
+
+    .p-dl > summary .plus::before,
+    .p-dl > summary .plus::after,
+    .bs-dl > summary .plus::before,
+    .bs-dl > summary .plus::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 11px;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      transform: translate(-50%, -50%);
+      transition: transform .3s ease;
+    }
+
+    .p-dl > summary .plus::before,
+    .bs-dl > summary .plus::before {
+      transform: translate(-50%, -50%) rotate(90deg)
+    }
+
+    .p-dl[open] > summary .plus,
+    .bs-dl[open] > summary .plus {
+      background: var(--gold);
+      color: #fff
+    }
+
+    .p-dl[open] > summary .plus::before,
+    .bs-dl[open] > summary .plus::before {
+      transform: translate(-50%, -50%) rotate(45deg)
+    }
+
+    .p-dl[open] > summary .plus::after,
+    .bs-dl[open] > summary .plus::after {
+      transform: translate(-50%, -50%) rotate(-45deg)
+    }
+
+    .p-dl > summary:hover,
+    .bs-dl > summary:hover {
+      color: var(--forest)
+    }
+
+    .p-dl > summary:focus-visible,
+    .bs-dl > summary:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: -2px;
+      border-radius: 12px
+    }
+
+    .p-dl > .p-list,
+    .p-dl > .p-menu {
+      padding: 3px 18px 18px
+    }
+
+    .p-dl > .p-line {
+      padding: 3px 18px 0;
+      margin: 0
+    }
+
+    .p-dl > .p-line + .p-line,
+    .p-dl > .p-menu + .p-line {
+      margin-top: 6px
+    }
+
+    .p-dl > .p-line:last-child {
+      padding-bottom: 18px
+    }
+
+    .bs-dl > .bs-grid,
+    .bs-dl > .bs-warn,
+    .bs-dl > .bs-menu {
+      margin: 0 12px 12px
+    }
+
     /* ===== FOOTER ===== */
     footer {
       text-align: center;
@@ -710,7 +904,7 @@
 
     footer .brand {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--forest);
       font-size: 1rem
     }
@@ -758,7 +952,7 @@
 
     .xp-head h3 {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.5rem;
       color: var(--forest);
       line-height: 1.1
@@ -883,6 +1077,17 @@
       right: 10px
     }
 
+    .car-toggle {
+      bottom: 10px;
+      right: 14px;
+      top: auto;
+      transform: none;
+    }
+
+    .car-toggle .material-icons {
+      font-size: 1.25rem;
+    }
+
     .car-dots {
       position: absolute;
       z-index: 3;
@@ -892,6 +1097,7 @@
       display: flex;
       justify-content: center;
       gap: 6px;
+      pointer-events: none;
     }
 
     .car-dots button {
@@ -906,6 +1112,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      pointer-events: auto;
     }
 
     .car-dots button::before {
@@ -942,7 +1149,7 @@
 
     .p-card .p-title {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.3rem;
       color: var(--forest);
       line-height: 1.15;
@@ -1401,15 +1608,6 @@
       margin-bottom: 22px;
     }
 
-    .sec-card .kicker2 {
-      color: var(--leaf);
-      font-weight: 800;
-      font-size: .68rem;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
     .sec-card h2.section-title {
       font-size: 1.6rem
     }
@@ -1711,7 +1909,7 @@
 
     .cafe-head h2 {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.5rem;
       color: #fff;
     }
@@ -2787,7 +2985,7 @@
 
     .bs-title {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.35rem;
       color: var(--forest);
       margin-bottom: 2px;
@@ -2981,7 +3179,7 @@
 
     .bs-plan-name {
       font-family: 'Fraunces', serif;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.08rem;
       color: var(--forest);
       line-height: 1.15;
@@ -3247,10 +3445,45 @@
     .cv-img.loading {
       opacity: 0;
     }
+
+    /* ===== Refinement: foco de teclado coherente y micro-interacciones ===== */
+    .cta:focus-visible,
+    .badge:focus-visible,
+    .gal a:focus-visible,
+    .service-tile:focus-visible,
+    .xp-tab:focus-visible,
+    .xp-btn:focus-visible,
+    .car-nav:focus-visible,
+    .bs-car-nav:focus-visible,
+    .car-dots button:focus-visible,
+    .bs-car-dots button:focus-visible,
+    .bs-list-item:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 3px;
+    }
+
+    .wa-float:focus-visible {
+      outline: 3px solid var(--ring);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .p-dl,
+      .bs-dl,
+      .p-dl > summary .plus,
+      .bs-dl > summary .plus,
+      .p-dl > summary .plus::before,
+      .p-dl > summary .plus::after,
+      .bs-dl > summary .plus::before,
+      .bs-dl > summary .plus::after {
+        transition: none
+      }
+    }
   </style>
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
   <div class="leaf l1" aria-hidden="true"></div>
   <div class="leaf l2" aria-hidden="true"></div>
   <div class="leaf l3" aria-hidden="true"></div>
@@ -3285,17 +3518,17 @@
 
     <nav class="quicknav" aria-label="Navegación">
       <div class="qn-inner">
-        <a href="#servicios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-            <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
-          </svg>Servicios</a>
-        <a href="#galeria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      <a href="#galeria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="2" />
             <circle cx="8.5" cy="8.5" r="1.5" />
             <path d="m21 15-5-5L5 21" />
           </svg>Galería</a>
+        <a href="#servicios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+            <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
+          </svg>Servicios</a>
         <a href="#preguntas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9" />
@@ -3310,7 +3543,7 @@
     </nav>
 
     <!-- ===== CONTENT ===== -->
-    <main class="content">
+    <main class="content" id="main" tabindex="-1">
 
       <!-- Feature / Aventura -->
       <div class="feature reveal">
@@ -3321,6 +3554,71 @@
           <h2>¡Vive la aventura en contacto con la naturaleza!</h2>
           <p>Descubre experiencias únicas en Finca Papirucho Río Sonador: excursiones, camping, glamping y mucho más.
           </p>
+        </div>
+      </div>
+
+      <div class="sec-card reveal d1" id="galeria">
+        <div class="kicker2">Galería</div>
+        <h2 class="section-title">Descubre Finca Papirucho</h2>
+        <p class="intro">Explora nuestro espacio a través de imágenes del río Sonador, las áreas recreativas, las zonas
+          de camping y glamping, y las experiencias que hacen de este lugar un destino único.</p>
+        <div class="gal" style="margin-top:16px">
+          <a href="assets/new.jpg" target="_blank" rel="noopener"><img decoding="async" src="assets/progressive/new_web.jpg"
+              alt="Finca Papirucho Río Sonador" loading="lazy"><span class="cap">Río Sonador</span></a>
+          <a href="assets/progressive/f8e36946.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/f8e36946_web.jpg"
+              alt="Áreas recreativas" loading="lazy"></a>
+          <a href="assets/progressive/a0997d47.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/a0997d47_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/75737980.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/75737980_web.jpg" alt="Río Sonador"
+              loading="lazy"></a>
+          <a href="assets/progressive/6664387e.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/6664387e_web.jpg" alt="Naturaleza"
+              loading="lazy"></a>
+          <a href="assets/progressive/23ff6559.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/23ff6559_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/727101bf.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/727101bf_web.jpg"
+              alt="Camping y glamping" loading="lazy"></a>
+          <a href="assets/progressive/11bbebd0.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/11bbebd0_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/9b95f661.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/9b95f661_web.jpg" alt="Río Sonador"
+              loading="lazy"></a>
+          <a href="assets/progressive/a1034fac.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/a1034fac_web.jpg" alt="Naturaleza"
+              loading="lazy"></a>
+          <a href="assets/progressive/6430c738.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/6430c738_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/6449584a.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/6449584a_web.jpg" alt="Zona de camping en Finca Papirucho"
+              loading="lazy"></a>
+          <a href="assets/progressive/3fbaa461.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/3fbaa461_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/b2dda980.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/b2dda980_web.jpg" alt="Río Sonador"
+              loading="lazy"></a>
+          <a href="assets/progressive/bdf2533d.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/bdf2533d_web.jpg"
+              alt="Áreas recreativas" loading="lazy"></a>
+          <a href="assets/progressive/c8127129.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/c8127129_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/02c3367f.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/02c3367f_web.jpg"
+              alt="Camping y glamping" loading="lazy"></a>
+          <a href="assets/progressive/1cddf876.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/1cddf876_web.jpg"
+              alt="Finca Papirucho" loading="lazy"></a>
+          <a href="assets/progressive/18b1cd73.jpg" target="_blank" rel="noopener"><img
+              decoding="async" src="assets/progressive/18b1cd73_web.jpg" alt="Río Sonador"
+              loading="lazy"></a>
         </div>
       </div>
 
@@ -3356,7 +3654,7 @@
       </div>
 
       <!-- ===== NUESTROS SERVICIOS ===== -->
-      <div class="sec-card services-card reveal">
+      <div class="sec-card services-card reveal sec-anchor" id="servicios">
         <div class="kicker2">Nuestros servicios</div>
         <h2 class="section-title">Todo para tu aventura</h2>
         <p class="intro">Elige la experiencia que mejor se adapte a tu forma de disfrutar la naturaleza.</p>
@@ -3405,7 +3703,7 @@
       </div>
 
       <!-- ===== PRODUCT TABS ===== -->
-      <div class="xp-tabs sec-anchor" id="servicios">
+      <div class="xp-tabs">
         <div class="xp-tabbar" role="tablist" aria-label="Experiencias">
           <button id="tab-camping" class="xp-tab active" data-tab="camping" role="tab" aria-controls="camping"
             aria-selected="true">Camping</button>
@@ -3498,8 +3796,8 @@
                     <div class="row"><span>Entrada (check-in)</span><b>9:00 a. m.</b></div>
                     <div class="row"><span>Salida (check-out)</span><b>11:00 a. m.</b></div>
                   </div>
-                  <div class="p-sec">
-                    <h5>Incluye</h5>
+                  <details class="p-dl">
+                    <summary><span class="plus" aria-hidden="true"></span>Incluye</summary>
                     <ul class="p-list">
                       <li><svg viewBox="0 0 24 24" fill="none" stroke="#5b8a3c" stroke-width="3" stroke-linecap="round"
                           stroke-linejoin="round">
@@ -3535,9 +3833,9 @@
                           stroke-linejoin="round">
                           <path d="M20 6 9 17l-5-5" /></svg>Área del balneario</li>
                     </ul>
-                  </div>
-                  <div class="p-sec">
-                    <h5 class="warn">Condiciones</h5>
+                  </details>
+                  <details class="p-dl">
+                    <summary class="warn"><span class="plus" aria-hidden="true"></span>Condiciones</summary>
                     <ul class="p-list">
                       <li><svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="3" stroke-linecap="round"
                           stroke-linejoin="round">
@@ -3551,7 +3849,7 @@
                           <path d="m9 9-6 6m0-6 6 6m3-11h9" /></svg>Seguir las normas del espacio y las indicaciones del
                         personal</li>
                     </ul>
-                  </div>
+                  </details>
                   <a class="xp-btn"
                     href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas…"
                     target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor">
@@ -3573,8 +3871,8 @@
                     <div class="row"><span>Entrada</span><b>3:00 p. m.</b></div>
                     <div class="row"><span>Salida</span><b>11:00 a. m.</b></div>
                   </div>
-                  <div class="p-sec">
-                    <h5>Incluye</h5>
+                  <details class="p-dl">
+                    <summary><span class="plus" aria-hidden="true"></span>Incluye</summary>
                     <ul class="p-list">
                       <li><svg viewBox="0 0 24 24" fill="none" stroke="#5b8a3c" stroke-width="3" stroke-linecap="round"
                           stroke-linejoin="round">
@@ -3599,17 +3897,17 @@
                           stroke-linejoin="round">
                           <path d="M20 6 9 17l-5-5" /></svg>Área del balneario</li>
                     </ul>
-                  </div>
-                  <div class="p-sec">
-                    <h5>Menú incluido</h5>
+                  </details>
+                  <details class="p-dl">
+                    <summary><span class="plus" aria-hidden="true"></span>Menú incluido</summary>
                     <div class="p-line"><span>– <b>Desayuno:</b> chocolate caliente, huevos y pan</span></div>
-                    <div class="p-line" style="margin-top:6px"><span>– <b>Almuerzo:</b> comida típica (la
+                    <div class="p-line"><span>– <b>Almuerzo:</b> comida típica (la
                         bandera)</span></div>
-                    <div class="p-line" style="margin-top:6px"><span>– <b>Cena:</b> los tres golpes (mangú, huevos,
+                    <div class="p-line"><span>– <b>Cena:</b> los tres golpes (mangú, huevos,
                         queso y salami)</span></div>
-                  </div>
-                  <div class="p-sec">
-                    <h5 class="warn">Condiciones</h5>
+                  </details>
+                  <details class="p-dl">
+                    <summary class="warn"><span class="plus" aria-hidden="true"></span>Condiciones</summary>
                     <ul class="p-list">
                       <li data-x><svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="3"
                           stroke-linecap="round" stroke-linejoin="round">
@@ -3622,7 +3920,7 @@
                           <path d="m9 9-6 6m0-6 6 6m3-11h9" /></svg>Excursión 9:00 a. m. · niños a partir de 9 años ·
                         sin alcohol antes ni durante</li>
                     </ul>
-                  </div>
+                  </details>
                   <a class="xp-btn"
                     href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas…"
                     target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor">
@@ -3639,8 +3937,8 @@
                   <p class="c-sub">Derecho a camping para quienes quieren acampar por su cuenta en el área natural.</p>
                   <div class="p-price">RD$700 <small>por persona</small></div>
                   <p class="p-note">MÍNIMO: 10 personas</p>
-                  <div class="p-sec">
-                    <h5>Incluye</h5>
+                  <details class="p-dl">
+                    <summary><span class="plus" aria-hidden="true"></span>Incluye</summary>
                     <ul class="p-list">
                       <li><svg viewBox="0 0 24 24" fill="none" stroke="#5b8a3c" stroke-width="3" stroke-linecap="round"
                           stroke-linejoin="round">
@@ -3655,7 +3953,7 @@
                           stroke-linejoin="round">
                           <path d="M20 6 9 17l-5-5" /></svg>Seguridad</li>
                     </ul>
-                  </div>
+                  </details>
                   <a class="xp-btn"
                     href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*CAMPING*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas…"
                     target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor">
@@ -3692,8 +3990,8 @@
                 <div class="row"><span>Recorrido (ida y vuelta)</span><b>3 km</b></div>
               </div>
 
-              <div class="p-sec">
-                <h5>Incluye</h5>
+              <details class="p-dl">
+                <summary><span class="plus" aria-hidden="true"></span>Incluye</summary>
                 <ul class="p-list">
                   <li><svg viewBox="0 0 24 24" fill="none" stroke="#e8a93c" stroke-width="3" stroke-linecap="round"
                       stroke-linejoin="round">
@@ -3715,10 +4013,10 @@
                       <path d="M20 6 9 17l-5-5" /></svg>Almuerzo criollo (moro, locrio o arroz con habichuelas y pollo)
                   </li>
                 </ul>
-              </div>
+              </details>
 
-              <div class="p-sec">
-                <h5 class="warn">Recomendaciones</h5>
+              <details class="p-dl">
+                <summary class="warn"><span class="plus" aria-hidden="true"></span>Recomendaciones</summary>
                 <ul class="p-list">
                   <li data-x><svg viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="3"
                       stroke-linecap="round" stroke-linejoin="round">
@@ -3728,7 +4026,7 @@
                       <path d="m9 9-6 6m0-6 6 6m3-11h9" /></svg>Usar leggings, calzado cerrado y ropa cómoda,
                     preferiblemente deportiva</li>
                 </ul>
-              </div>
+              </details>
 
               <a class="xp-btn"
                 href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*Excursion*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas…"
@@ -3796,8 +4094,8 @@
               </p>
               <div class="p-price">RD$3,000 <small>por día</small></div>
 
-              <div class="p-sec">
-                <h5>Incluye</h5>
+              <details class="p-dl">
+                <summary><span class="plus" aria-hidden="true"></span>Incluye</summary>
                 <ul class="p-list">
                   <li><svg viewBox="0 0 24 24" fill="none" stroke="#3aa0d4" stroke-width="3" stroke-linecap="round"
                       stroke-linejoin="round">
@@ -3812,7 +4110,7 @@
                       stroke-linejoin="round">
                       <path d="M20 6 9 17l-5-5" /></svg>Personal de apoyo para seguridad y atención</li>
                 </ul>
-              </div>
+              </details>
 
               <a class="xp-btn"
                 href="https://wa.me/18492077092?text=Bienvenido%20a%20Finca%20Papirucho%2C%20por%20esta%20via%20esta%20haciendo%20reserva%20para%20*Areas%20Recreativas*%0A%0APara%20agilizar%20su%20tramite%20por%20favor%20ind%C3%ADquenos%20su%20Nombre%2C%20Fecha%20interesado%20para%20su%20visita%2C%20Cantidad%20de%20personas…"
@@ -3878,70 +4176,7 @@
       </div>
 
       <!-- ===== DESCUBRE GALERÍA ===== -->
-      <div class="sec-card reveal d1" id="galeria">
-        <div class="kicker2">Galería</div>
-        <h2 class="section-title">Descubre Finca Papirucho</h2>
-        <p class="intro">Explora nuestro espacio a través de imágenes del río Sonador, las áreas recreativas, las zonas
-          de camping y glamping, y las experiencias que hacen de este lugar un destino único.</p>
-        <div class="gal" style="margin-top:16px">
-          <a href="assets/new.jpg" target="_blank" rel="noopener"><img decoding="async" src="assets/progressive/new_web.jpg"
-              alt="Finca Papirucho Río Sonador" loading="lazy"><span class="cap">Río Sonador</span></a>
-          <a href="assets/progressive/f8e36946.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/f8e36946_web.jpg"
-              alt="Áreas recreativas" loading="lazy"></a>
-          <a href="assets/progressive/a0997d47.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/a0997d47_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/75737980.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/75737980_web.jpg" alt="Río Sonador"
-              loading="lazy"></a>
-          <a href="assets/progressive/6664387e.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/6664387e_web.jpg" alt="Naturaleza"
-              loading="lazy"></a>
-          <a href="assets/progressive/23ff6559.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/23ff6559_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/727101bf.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/727101bf_web.jpg"
-              alt="Camping y glamping" loading="lazy"></a>
-          <a href="assets/progressive/11bbebd0.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/11bbebd0_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/9b95f661.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/9b95f661_web.jpg" alt="Río Sonador"
-              loading="lazy"></a>
-          <a href="assets/progressive/a1034fac.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/a1034fac_web.jpg" alt="Naturaleza"
-              loading="lazy"></a>
-          <a href="assets/progressive/6430c738.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/6430c738_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/6449584a.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/6449584a_web.jpg" alt="Zona de camping en Finca Papirucho"
-              loading="lazy"></a>
-          <a href="assets/progressive/3fbaa461.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/3fbaa461_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/b2dda980.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/b2dda980_web.jpg" alt="Río Sonador"
-              loading="lazy"></a>
-          <a href="assets/progressive/bdf2533d.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/bdf2533d_web.jpg"
-              alt="Áreas recreativas" loading="lazy"></a>
-          <a href="assets/progressive/c8127129.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/c8127129_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/02c3367f.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/02c3367f_web.jpg"
-              alt="Camping y glamping" loading="lazy"></a>
-          <a href="assets/progressive/1cddf876.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/1cddf876_web.jpg"
-              alt="Finca Papirucho" loading="lazy"></a>
-          <a href="assets/progressive/18b1cd73.jpg" target="_blank" rel="noopener"><img
-              decoding="async" src="assets/progressive/18b1cd73_web.jpg" alt="Río Sonador"
-              loading="lazy"></a>
-        </div>
-      </div>
+      
 
       <!-- ===== TENEMOS CAFETERÍA ===== -->
       <div class="cafe-head reveal d1">
@@ -4096,6 +4331,7 @@
           <span class="txt">Escríbenos por WhatsApp<small>Reservas y consultas</small></span>
           <span class="arrow material-icons" aria-hidden="true">arrow_forward</span>
         </a>
+        <p class="cta-fallback" id="wa-fallback" hidden>¿No funciona? Llámanos al <a href="tel:+18492077092">+1 849-207-7092</a></p>
         <a class="cta" href="https://maps.app.goo.gl/sFb7X8fM2yFeqbTo8?g_st=ic" target="_blank" rel="noopener">
           <span class="ico map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round">
@@ -4169,6 +4405,28 @@
       el.setAttribute('aria-hidden', 'true');
       el.textContent = name;
       return el;
+    }
+
+    /* ---- Alt descriptivo para imágenes de carrusel según el nombre del archivo ---- */
+    function slideAlt(src, fallback) {
+      var ALTS = {
+        'camping_hero_web.jpg': 'Tienda de campaña junto al río en Finca Papirucho',
+        'glamping_web.jpg': 'Glamping para parejas en Finca Papirucho',
+        'acceso_web.jpg': 'Acceso al área de camping en Finca Papirucho',
+        '85bbcae0_web.jpg': 'Camping grupal junto al río en Finca Papirucho',
+        '9d1519dc_web.jpg': 'Excursión por el río Sonador en Finca Papirucho',
+        '2d7c625e_web.jpg': 'Excursión por el río Sonador en Finca Papirucho',
+        '22583405_web.jpg': 'Excursión por el río Sonador en Finca Papirucho',
+        '52560b04_web.jpg': 'Excursión por el río Sonador en Finca Papirucho',
+        'e5681a45_web.jpg': 'Excursión por el río Sonador en Finca Papirucho',
+        '94c56be1_web.jpg': 'Tour de fourwheel por el río en Finca Papirucho',
+        '90c4fa95_web.jpg': 'Tour de fourwheel por el río en Finca Papirucho',
+        'cfb70b53_web.jpg': 'Tour de fourwheel por el río en Finca Papirucho',
+        '9eb4c379_web.jpg': 'Tour de fourwheel por el río en Finca Papirucho',
+        '443b56bc_web.jpg': 'Área del balneario frente al río Sonador'
+      };
+      var key = src ? src.split('/').pop() : null;
+      return (key && ALTS[key]) || fallback;
     }
 
     /* ---- Progressive loading helper for dynamically-created carousel images ---- */
@@ -4278,7 +4536,7 @@
         slide.className = 'slide';
         var img = document.createElement('img');
         img.src = s.trim();
-        img.alt = hero.getAttribute('aria-label') || 'Finca Papirucho';
+        img.alt = slideAlt(s, hero.getAttribute('aria-label') || 'Finca Papirucho');
         img.loading = 'lazy';
         slide.appendChild(img);
         applyProgressive(img);
@@ -4334,12 +4592,37 @@
           go(idx + 1);
           restart()
         });
+        var toggle = document.createElement('button');
+        var paused = false;
+        var userPaused = false;
+        toggle.className = 'car-nav car-toggle';
+        toggle.setAttribute('aria-label', 'Pausar presentación');
+        toggle.setAttribute('aria-pressed', String(paused));
+        toggle.appendChild(iconEl('pause'));
+        toggle.addEventListener('click', function () {
+          paused = !paused;
+          if (paused) {
+            stop()
+          } else {
+            start()
+          }
+          userPaused = paused;
+          syncToggle()
+        });
         car.appendChild(prev);
         car.appendChild(next);
+        car.appendChild(toggle);
         car.appendChild(dots);
         go(0);
-        /* autoplay */
+        /* autoplay — 4s calmado; se pausa en hover, en swipe y con el botón */
         var timer = null;
+
+        function syncToggle() {
+          while (toggle.firstChild) toggle.removeChild(toggle.firstChild);
+          toggle.appendChild(iconEl(paused ? 'play_arrow' : 'pause'));
+          toggle.setAttribute('aria-label', paused ? 'Reproducir presentación' : 'Pausar presentación');
+          toggle.setAttribute('aria-pressed', String(paused));
+        }
 
         function start() {
           if (timer) {
@@ -4349,7 +4632,7 @@
           if (reduced || trackW < 2) return;
           timer = setInterval(function () {
             go(idx + 1)
-          }, 2000)
+          }, 4000)
         }
 
         function stop() {
@@ -4361,10 +4644,12 @@
 
         function restart() {
           stop();
-          start()
+          if (!userPaused) start()
         }
         car.addEventListener('mouseenter', stop);
-        car.addEventListener('mouseleave', start);
+        car.addEventListener('mouseleave', function () {
+          if (!userPaused) start()
+        });
         /* touch / mouse swipe */
         var sx = 0,
           sdx = 0,
@@ -4391,8 +4676,8 @@
             sdx < 0 ? go(idx + 1) : go(idx - 1)
           } else {
             go(idx)
-          };
-          start()
+          }
+          if (!userPaused) start()
         }
         track.addEventListener('pointerup', end);
         track.addEventListener('pointercancel', end);
@@ -5100,7 +5385,7 @@
             slide.className = 'bs-slide';
             var img = document.createElement('img');
             img.src = src;
-            img.alt = d.title;
+            img.alt = slideAlt(src, d.title);
             slide.appendChild(img);
             track.appendChild(slide);
           });
@@ -5128,7 +5413,7 @@
         } else {
           var img = document.createElement('img');
           img.src = d.images[0];
-          img.alt = d.title;
+          img.alt = slideAlt(d.images[0], d.title);
           img.style.width = '100%';
           img.style.height = '100%';
           img.style.objectFit = 'cover';
@@ -5243,9 +5528,11 @@
         }
         function warnBlock(title, warn) {
           var w = el('div', 'bs-warn');
-          var t = el('div', 'bs-warn-title');
-          t.textContent = title;
-          w.appendChild(t);
+          if (title) {
+            var t = el('div', 'bs-warn-title');
+            t.textContent = title;
+            w.appendChild(t);
+          }
           var ul = el('ul', 'bs-warn-list');
           warn.forEach(function (x) {
             var li = el('li');
@@ -5269,6 +5556,18 @@
           a.appendChild(svg);
           appendText(a, cta);
           return a;
+        }
+        function collapse(title, content) {
+          var dl = el('details', 'bs-dl');
+          var sm = el('summary');
+          var plus = el('span', 'plus');
+          plus.setAttribute('aria-hidden', 'true');
+          sm.appendChild(plus);
+          appendText(sm, title);
+          if (!title) sm.setAttribute('aria-label', 'Condiciones');
+          dl.appendChild(sm);
+          dl.appendChild(content);
+          return dl;
         }
 
         var title = el('div', 'bs-title');
@@ -5300,19 +5599,9 @@
               body.appendChild(note);
             }
             if (p.sched && p.sched.length) body.appendChild(schedBlock(p.sched));
-            if (p.incl && p.incl.length) {
-              var secT = el('div', 'bs-sec-title');
-              secT.textContent = 'Qué incluye';
-              body.appendChild(secT);
-              body.appendChild(inclGrid(p.incl));
-            }
-            if (p.menu && p.menu.length) {
-              var secM = el('div', 'bs-sec-title');
-              secM.textContent = 'Menú incluido';
-              body.appendChild(secM);
-              body.appendChild(menuBlock(p.menu));
-            }
-            if (p.warn && p.warn.length) body.appendChild(warnBlock('Condiciones', p.warn));
+            if (p.incl && p.incl.length) body.appendChild(collapse('Qué incluye', inclGrid(p.incl)));
+            if (p.menu && p.menu.length) body.appendChild(collapse('Menú incluido', menuBlock(p.menu)));
+            if (p.warn && p.warn.length) body.appendChild(collapse('', warnBlock('', p.warn)));
             body.appendChild(waLink(p.wa, p.cta));
             plan.appendChild(body);
             bodyEl.appendChild(plan);
@@ -5335,13 +5624,8 @@
             desc.textContent = d.desc;
             bodyEl.appendChild(desc);
           }
-          if (d.incl && d.incl.length) {
-            var secI = el('div', 'bs-sec-title');
-            secI.textContent = 'Qué incluye';
-            bodyEl.appendChild(secI);
-            bodyEl.appendChild(inclGrid(d.incl));
-          }
-          if (d.warn && d.warn.length) bodyEl.appendChild(warnBlock('Recomendaciones', d.warn));
+          if (d.incl && d.incl.length) bodyEl.appendChild(collapse('Qué incluye', inclGrid(d.incl)));
+          if (d.warn && d.warn.length) bodyEl.appendChild(collapse('Recomendaciones', warnBlock('', d.warn)));
           bodyEl.appendChild(waLink(d.wa, d.cta));
         }
       }
@@ -5753,6 +6037,18 @@
 
       /* ---- Public API for other viewers (e.g. gallery lightbox) ---- */
       window.cvOpenViewer = openViewer;
+
+      /* ---- WhatsApp offline fallback: muestra el teléfono si la red cae ---- */
+      var waFallback = document.getElementById('wa-fallback');
+      if (waFallback) {
+        if (!navigator.onLine) waFallback.hidden = false;
+        window.addEventListener('offline', function () {
+          waFallback.hidden = false;
+        });
+        window.addEventListener('online', function () {
+          waFallback.hidden = true;
+        });
+      }
     })();
   </script>
   <a class="wa-float"
