@@ -1,0 +1,7 @@
+# Security contact for Finca Papirucho
+# https://fincapapirucho.site/
+
+Contact: https://fincapapirucho.site/
+Expires: 2027-09-22T00:00:00.000Z
+Preferred-Languages: es
+Canonical: https://fincapapirucho.site/.well-known/security.txt
